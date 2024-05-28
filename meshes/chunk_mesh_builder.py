@@ -1,5 +1,7 @@
 from settings import *
 from numba import uint8
+from numba import njit
+import numpy as np
 
 @njit
 def get_ao(Local_pos, world_pos, world_voxels, plane):
@@ -40,8 +42,28 @@ def get_ao(Local_pos, world_pos, world_voxels, plane):
     return ao
 
 @njit
-def to_uint8(x, y, z, voxel_id, face_id, ao_id, flip_id):
-    return uint8(x), uint8(y), uint8(z), uint8(voxel_id), uint8(face_id), uint8(ao_id), uint8(flip_id)
+def pack_data(x, y, z, voxel_id, face_id, ao_id, flip_id): #Impacchetta i dati in modo ottimale per risparmiare VRAM
+    # x: 6 bit y: 6 bit z: 6 bit voxel_id: 8 bit face_id: 3 bit ao_id: 2 bit flip_id: 1 bit (Le coordinate sono a 6 bit perchè i chunk sono 32x32 e 2 alla 6 fa 64)
+    a, b, c, d, e, f, g = x, y, z, voxel_id, face_id, ao_id, flip_id
+
+    #Numero di bit per cui shiftare i valori (valori da soli e tutte le combinazioni possibili)
+    b_bit, c_bit, d_bit, e_bit, f_bit, g_bit = 6, 6, 8, 3, 2, 1	
+    fg_bit = f_bit + g_bit
+    efg_bit = e_bit + fg_bit
+    defg_bit = d_bit + efg_bit
+    cdefg_bit = c_bit + defg_bit
+    bcdefg_bit = b_bit + cdefg_bit
+
+    packed_data = (
+        #Applicare operazioni di bitshift per comprimere i dati
+        a << bcdefg_bit |
+        b << cdefg_bit |
+        c << defg_bit |
+        d << efg_bit |
+        e << fg_bit |
+        f << g_bit | g
+    )
+    return packed_data
 
 @njit
 def get_chunk_index(world_voxel_pos):
@@ -74,15 +96,14 @@ def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
 @njit
 def add_data(vertex_data, index, *vertices):
     for vertex in vertices:
-        for attr in vertex:
-            vertex_data[index] = attr
-            index += 1
+        vertex_data[index] = vertex
+        index += 1
     return index
 
 
 @njit
 def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
-    vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype='uint8')
+    vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype='uint32') #Data type uint32 perchè i tutti i valori se compressi assieme possono occupare massimo 32 bit
     index = 0
 
     for x in range(CHUNK_SIZE):
@@ -106,10 +127,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
                     # format: x, y, z, voxel_id, face_id, ao_id, flip_id
-                    v0 = to_uint8(x    , y + 1, z    , voxel_id, 0, ao[0], flip_id)
-                    v1 = to_uint8(x + 1, y + 1, z    , voxel_id, 0, ao[1], flip_id)
-                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 0, ao[2], flip_id)
-                    v3 = to_uint8(x    , y + 1, z + 1, voxel_id, 0, ao[3], flip_id)
+                    v0 = pack_data(x    , y + 1, z    , voxel_id, 0, ao[0], flip_id)
+                    v1 = pack_data(x + 1, y + 1, z    , voxel_id, 0, ao[1], flip_id)
+                    v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 0, ao[2], flip_id)
+                    v3 = pack_data(x    , y + 1, z + 1, voxel_id, 0, ao[3], flip_id)
 
                     if flip_id:
                         index = add_data(vertex_data, index, v1, v0, v3, v1, v3, v2)
@@ -121,10 +142,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     ao = get_ao((x, y - 1, z), (wx, wy - 1, wz), world_voxels, plane='Y')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x    , y, z    , voxel_id, 1, ao[0], flip_id)
-                    v1 = to_uint8(x + 1, y, z    , voxel_id, 1, ao[1], flip_id)
-                    v2 = to_uint8(x + 1, y, z + 1, voxel_id, 1, ao[2], flip_id)
-                    v3 = to_uint8(x    , y, z + 1, voxel_id, 1, ao[3], flip_id)
+                    v0 = pack_data(x    , y, z    , voxel_id, 1, ao[0], flip_id)
+                    v1 = pack_data(x + 1, y, z    , voxel_id, 1, ao[1], flip_id)
+                    v2 = pack_data(x + 1, y, z + 1, voxel_id, 1, ao[2], flip_id)
+                    v3 = pack_data(x    , y, z + 1, voxel_id, 1, ao[3], flip_id)
 
                     if flip_id:
                         index = add_data(vertex_data, index, v1, v3, v0, v1, v2, v3)
@@ -136,10 +157,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     ao = get_ao((x + 1, y, z), (wx + 1, wy, wz), world_voxels, plane='X')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x + 1, y    , z    , voxel_id, 2, ao[0], flip_id)
-                    v1 = to_uint8(x + 1, y + 1, z    , voxel_id, 2, ao[1], flip_id)
-                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 2, ao[2], flip_id)
-                    v3 = to_uint8(x + 1, y    , z + 1, voxel_id, 2, ao[3], flip_id)
+                    v0 = pack_data(x + 1, y    , z    , voxel_id, 2, ao[0], flip_id)
+                    v1 = pack_data(x + 1, y + 1, z    , voxel_id, 2, ao[1], flip_id)
+                    v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 2, ao[2], flip_id)
+                    v3 = pack_data(x + 1, y    , z + 1, voxel_id, 2, ao[3], flip_id)
 
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
@@ -151,10 +172,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     ao = get_ao((x - 1, y, z), (wx - 1, wy, wz), world_voxels, plane='X')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x, y    , z    , voxel_id, 3, ao[0], flip_id)
-                    v1 = to_uint8(x, y + 1, z    , voxel_id, 3, ao[1], flip_id)
-                    v2 = to_uint8(x, y + 1, z + 1, voxel_id, 3, ao[2], flip_id)
-                    v3 = to_uint8(x, y    , z + 1, voxel_id, 3, ao[3], flip_id)
+                    v0 = pack_data(x, y    , z    , voxel_id, 3, ao[0], flip_id)
+                    v1 = pack_data(x, y + 1, z    , voxel_id, 3, ao[1], flip_id)
+                    v2 = pack_data(x, y + 1, z + 1, voxel_id, 3, ao[2], flip_id)
+                    v3 = pack_data(x, y    , z + 1, voxel_id, 3, ao[3], flip_id)
 
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
@@ -166,10 +187,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     ao = get_ao((x, y, z - 1), (wx, wy, wz - 1), world_voxels, plane='Z')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x,     y,     z, voxel_id, 4, ao[0], flip_id)
-                    v1 = to_uint8(x,     y + 1, z, voxel_id, 4, ao[1], flip_id)
-                    v2 = to_uint8(x + 1, y + 1, z, voxel_id, 4, ao[2], flip_id)
-                    v3 = to_uint8(x + 1, y,     z, voxel_id, 4, ao[3], flip_id)
+                    v0 = pack_data(x,     y,     z, voxel_id, 4, ao[0], flip_id)
+                    v1 = pack_data(x,     y + 1, z, voxel_id, 4, ao[1], flip_id)
+                    v2 = pack_data(x + 1, y + 1, z, voxel_id, 4, ao[2], flip_id)
+                    v3 = pack_data(x + 1, y,     z, voxel_id, 4, ao[3], flip_id)
 
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
@@ -181,10 +202,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     ao = get_ao((x, y, z + 1), (wx, wy, wz + 1), world_voxels, plane='Z')
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x    , y    , z + 1, voxel_id, 5, ao[0], flip_id)
-                    v1 = to_uint8(x    , y + 1, z + 1, voxel_id, 5, ao[1], flip_id)
-                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 5, ao[2], flip_id)
-                    v3 = to_uint8(x + 1, y    , z + 1, voxel_id, 5, ao[3], flip_id)
+                    v0 = pack_data(x    , y    , z + 1, voxel_id, 5, ao[0], flip_id)
+                    v1 = pack_data(x    , y + 1, z + 1, voxel_id, 5, ao[1], flip_id)
+                    v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 5, ao[2], flip_id)
+                    v3 = pack_data(x + 1, y    , z + 1, voxel_id, 5, ao[3], flip_id)
 
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)

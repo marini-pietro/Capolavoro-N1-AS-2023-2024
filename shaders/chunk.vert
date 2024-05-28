@@ -1,10 +1,12 @@
 #version 330 core
 
-layout (location = 0) in ivec3 in_position;
-layout (location = 1) in int voxel_id;
-layout (location = 2) in int face_id;
-layout (location = 3) in int ao_id;
-layout (location = 4) in int flip_id;
+layout (location = 0) in uint packed_data;
+
+int x, y, z;
+int voxel_id;
+int face_id;
+int ao_id;
+int flip_id;
 
 uniform mat4 m_proj;
 uniform mat4 m_view;
@@ -41,6 +43,35 @@ vec3 hash31(float p) {
     return fract((p3.xxy + p3.yzz) * p3.zyx) + 0.05;
 }
 
+void unpack(uint packed_data){ //Decomprime i dati rendendoli usabili tramite operazioni di bit shifting
+    //a, b, c, d, e, f, g = x, y, z, voxel_id, face_id, ao_id, flip_id
+    
+    //Bit depths
+    //Base bit depths
+    uint b_bit = 6u;
+    uint c_bit = 6u;
+    uint d_bit = 8u;
+    uint e_bit = 3u;
+    uint f_bit = 2u;
+    uint g_bit = 1u;
+    //Combined bit depths
+    uint fg_bit = f_bit + gbit;
+    uint efg_bit = e_bit + fg_bit;
+    uint defg_bit = d_bit + efg_bit;
+    uint cdefg_bit = c_bit + defg_bit;
+    uint bcdefg_bit = b_bit + cdefg_bit;
+
+    //Bit masks
+    uint b_mask = 63u; //y
+    uint c_mask = 63u; //z
+    uint d_mask = 255u; //voxel_id
+    uint e_mask = 7u; //face_id
+    uint f_mask = 3u; //ao_id
+    uint g_mask = 1u; //flip_id
+
+    //Unpacking vertex packed_data
+    x = int
+}
 
 void main() {
     int uv_index = gl_VertexID % 6  + ((face_id & 1) + flip_id * 2) * 6;

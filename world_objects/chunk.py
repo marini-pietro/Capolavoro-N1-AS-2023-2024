@@ -1,6 +1,6 @@
 from settings import *
 from meshes.chunk_mesh import ChunkMesh
-
+import random
 
 class Chunk:
     def __init__(self, world, position):
@@ -33,6 +33,7 @@ class Chunk:
 
         # fill chunk
         cx, cy, cz = glm.ivec3(self.position) * CHUNK_SIZE
+        #rng = random.randrange(1, 100) #Per separare i chunk visibilmente con colori
 
         for x in range(CHUNK_SIZE):
             wx = x + cx
@@ -44,54 +45,9 @@ class Chunk:
                 for y in range(local_height):
                     wy = y + cy
                     voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = wy + 1
+                    #voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = rng #Per separare i chunk visibilmente con colori
 
         if np.any(voxels):
             self.is_empty = False
 
         return voxels
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,7 +1,6 @@
 from meshes.base_mesh import BaseMesh
 from meshes.chunk_mesh_builder import build_chunk_mesh
 
-
 class ChunkMesh(BaseMesh):
     def __init__(self, chunk):
         super().__init__()
@@ -12,7 +11,10 @@ class ChunkMesh(BaseMesh):
 
         self.vbo_format = '1u4'
         self.format_size = sum(int(fmt[:1]) for fmt in self.vbo_format.split())
-        self.attrs = ('packed_data') #Un solo attributo in cui sono compressi tutti i dati necessari tramite operazioni di bit shifting
+        self.attrs = ('packed_data',)
+        self.vao = self.get_vao()
+
+    def rebuild(self):
         self.vao = self.get_vao()
 
     def get_vertex_data(self):

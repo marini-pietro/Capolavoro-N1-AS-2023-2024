@@ -1,15 +1,13 @@
 from settings import *
 from numba import uint8
-from numba import njit
-import numpy as np
 
 @njit
-def get_ao(Local_pos, world_pos, world_voxels, plane):
-    x, y, z = Local_pos
+def get_ao(local_pos, world_pos, world_voxels, plane):
+    x, y, z = local_pos
     wx, wy, wz = world_pos
 
-    if plane == 'Y': #Top and Bottom (they belong to the Y plane)
-        a = is_void((x    , y, z - 1), (wx   , wy, wz - 1), world_voxels)
+    if plane == 'Y':
+        a = is_void((x    , y, z - 1), (wx    , wy, wz - 1), world_voxels)
         b = is_void((x - 1, y, z - 1), (wx - 1, wy, wz - 1), world_voxels)
         c = is_void((x - 1, y, z    ), (wx - 1, wy, wz    ), world_voxels)
         d = is_void((x - 1, y, z + 1), (wx - 1, wy, wz + 1), world_voxels)
@@ -18,7 +16,7 @@ def get_ao(Local_pos, world_pos, world_voxels, plane):
         g = is_void((x + 1, y, z    ), (wx + 1, wy, wz    ), world_voxels)
         h = is_void((x + 1, y, z - 1), (wx + 1, wy, wz - 1), world_voxels)
 
-    elif plane == 'X': #Right and Left (they belong to the X plane)
+    elif plane == 'X':
         a = is_void((x, y    , z - 1), (wx, wy    , wz - 1), world_voxels)
         b = is_void((x, y - 1, z - 1), (wx, wy - 1, wz - 1), world_voxels)
         c = is_void((x, y - 1, z    ), (wx, wy - 1, wz    ), world_voxels)
@@ -28,8 +26,8 @@ def get_ao(Local_pos, world_pos, world_voxels, plane):
         g = is_void((x, y + 1, z    ), (wx, wy + 1, wz    ), world_voxels)
         h = is_void((x, y + 1, z - 1), (wx, wy + 1, wz - 1), world_voxels)
 
-    else: #Front and Back (they belong to the Z plane)
-        a = is_void((x - 1, y,     z), (wx - 1, wy    , wz), world_voxels)
+    else:  # Z plane
+        a = is_void((x - 1, y    , z), (wx - 1, wy    , wz), world_voxels)
         b = is_void((x - 1, y - 1, z), (wx - 1, wy - 1, wz), world_voxels)
         c = is_void((x    , y - 1, z), (wx    , wy - 1, wz), world_voxels)
         d = is_void((x + 1, y - 1, z), (wx + 1, wy - 1, wz), world_voxels)
@@ -41,13 +39,13 @@ def get_ao(Local_pos, world_pos, world_voxels, plane):
     ao = (a + b + c), (g + h + a), (e + f + g), (c + d + e)
     return ao
 
+
 @njit
-def pack_data(x, y, z, voxel_id, face_id, ao_id, flip_id): #Impacchetta i dati in modo ottimale per risparmiare VRAM
-    # x: 6 bit y: 6 bit z: 6 bit voxel_id: 8 bit face_id: 3 bit ao_id: 2 bit flip_id: 1 bit (Le coordinate sono a 6 bit perchè i chunk sono 32x32 e 2 alla 6 fa 64)
+def pack_data(x, y, z, voxel_id, face_id, ao_id, flip_id):
+    # x: 6bit  y: 6bit  z: 6bit  voxel_id: 8bit  face_id: 3bit  ao_id: 2bit  flip_id: 1bit
     a, b, c, d, e, f, g = x, y, z, voxel_id, face_id, ao_id, flip_id
 
-    #Numero di bit per cui shiftare i valori (valori da soli e tutte le combinazioni possibili)
-    b_bit, c_bit, d_bit, e_bit, f_bit, g_bit = 6, 6, 8, 3, 2, 1	
+    b_bit, c_bit, d_bit, e_bit, f_bit, g_bit = 6, 6, 8, 3, 2, 1
     fg_bit = f_bit + g_bit
     efg_bit = e_bit + fg_bit
     defg_bit = d_bit + efg_bit
@@ -55,7 +53,6 @@ def pack_data(x, y, z, voxel_id, face_id, ao_id, flip_id): #Impacchetta i dati i
     bcdefg_bit = b_bit + cdefg_bit
 
     packed_data = (
-        #Applicare operazioni di bitshift per comprimere i dati
         a << bcdefg_bit |
         b << cdefg_bit |
         c << defg_bit |
@@ -77,7 +74,6 @@ def get_chunk_index(world_voxel_pos):
     index = cx + WORLD_W * cz + WORLD_AREA * cy
     return index
 
-
 @njit
 def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
     chunk_index = get_chunk_index(world_voxel_pos)
@@ -92,7 +88,6 @@ def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
         return False
     return True
 
-
 @njit
 def add_data(vertex_data, index, *vertices):
     for vertex in vertices:
@@ -100,10 +95,9 @@ def add_data(vertex_data, index, *vertices):
         index += 1
     return index
 
-
 @njit
 def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
-    vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype='uint32') #Data type uint32 perchè i tutti i valori se compressi assieme possono occupare massimo 32 bit
+    vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype='uint32')
     index = 0
 
     for x in range(CHUNK_SIZE):

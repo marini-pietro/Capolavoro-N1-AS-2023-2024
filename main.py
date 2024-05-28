@@ -7,6 +7,7 @@ from scene import Scene
 from player import Player
 from textures import Textures
 
+
 class VoxelEngine:
     def __init__(self):
         pg.init()
@@ -15,17 +16,16 @@ class VoxelEngine:
         pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
         pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, 24)
 
-        pg.display.set_mode(WIN_RES, flags=pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE) #Set del display di pygame e del suo comportamento 
+        pg.display.set_mode(WIN_RES, flags=pg.OPENGL | pg.DOUBLEBUF)
         self.ctx = mgl.create_context()
 
         self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
-        self.ctx.gc_mode = 'auto' #Automatic garbage collection
+        self.ctx.gc_mode = 'auto'
 
         self.clock = pg.time.Clock()
         self.delta_time = 0
         self.time = 0
 
-        #Blocca il mouse nella finestra
         pg.event.set_grab(True)
         pg.mouse.set_visible(False)
 
@@ -56,6 +56,7 @@ class VoxelEngine:
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 self.is_running = False
+            self.player.handle_event(event=event)
 
     def run(self):
         while self.is_running:
@@ -64,6 +65,7 @@ class VoxelEngine:
             self.render()
         pg.quit()
         sys.exit()
+
 
 if __name__ == '__main__':
     app = VoxelEngine()

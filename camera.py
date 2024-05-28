@@ -16,7 +16,6 @@ class Camera:
 
     def update(self):
         self.update_vectors()
-        #print(self.position)
         self.update_view_matrix()
 
     def update_view_matrix(self):
@@ -38,8 +37,6 @@ class Camera:
     def rotate_yaw(self, delta_x):
         self.yaw += delta_x
 
-    #Modifica questi metodi in modo che il movimento non sia relativo a dove stai guardando
-
     def move_left(self, velocity):
         self.position -= self.right * velocity
 
@@ -57,3 +54,45 @@ class Camera:
 
     def move_back(self, velocity):
         self.position -= self.forward * velocity
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

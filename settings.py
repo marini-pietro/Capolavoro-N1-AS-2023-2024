@@ -1,10 +1,13 @@
-#from numba import njit
-#import numpy as np
+from numba import njit
+import numpy as np
 import glm
 import math
 
 # resolution
 WIN_RES = glm.vec2(1080, 720)
+
+#Ray Casting
+MAX_RAY_DIST = 6
 
 # chunk
 CHUNK_SIZE = 32
@@ -13,7 +16,7 @@ CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE
 CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
 
 # world (sempre mondo quadrato perchè la z è posta uguale alla x)
-WORLD_W, WORLD_H = 4, 4
+WORLD_W, WORLD_H = 16, 4
 WORLD_D = WORLD_W
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H

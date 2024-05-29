@@ -11,10 +11,11 @@ from textures import Textures
 class VoxelEngine:
     def __init__(self):
         pg.init()
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, 3)
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, 3)
+        pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, MAJOR_VER)
+        pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, MINOR_VER)
         pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
-        pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, 24)
+        pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, DEPTH_SIZE)
+        pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, NUM_SAMPLES)
 
         pg.display.set_mode(WIN_RES, flags=pg.OPENGL | pg.DOUBLEBUF)
         self.ctx = mgl.create_context()
@@ -48,7 +49,7 @@ class VoxelEngine:
         pg.display.set_caption(f'{self.clock.get_fps() :.0f}')
 
     def render(self):
-        self.ctx.clear()
+        self.ctx.clear(color=BG_COLOR)
         self.scene.render()
         pg.display.flip()
 

@@ -2,6 +2,7 @@ from settings import *
 from world_objects.chunk import Chunk
 from voxel_handler import VoxelHandler
 
+
 class World:
     def __init__(self, app):
         self.app = app
@@ -36,35 +37,3 @@ class World:
     def render(self):
         for chunk in self.chunks:
             chunk.render()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

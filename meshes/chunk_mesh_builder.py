@@ -1,6 +1,7 @@
 from settings import *
 from numba import uint8
 
+
 @njit
 def get_ao(local_pos, world_pos, world_voxels, plane):
     x, y, z = local_pos
@@ -62,6 +63,7 @@ def pack_data(x, y, z, voxel_id, face_id, ao_id, flip_id):
     )
     return packed_data
 
+
 @njit
 def get_chunk_index(world_voxel_pos):
     wx, wy, wz = world_voxel_pos
@@ -73,6 +75,7 @@ def get_chunk_index(world_voxel_pos):
 
     index = cx + WORLD_W * cz + WORLD_AREA * cy
     return index
+
 
 @njit
 def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
@@ -88,12 +91,14 @@ def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
         return False
     return True
 
+
 @njit
 def add_data(vertex_data, index, *vertices):
     for vertex in vertices:
         vertex_data[index] = vertex
         index += 1
     return index
+
 
 @njit
 def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):

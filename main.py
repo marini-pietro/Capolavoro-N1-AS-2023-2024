@@ -17,18 +17,18 @@ class VoxelEngine:
         pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, DEPTH_SIZE)
         pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, NUM_SAMPLES)
 
-        pg.display.set_mode(WIN_RES, flags=pg.OPENGL | pg.DOUBLEBUF)
-        self.ctx = mgl.create_context()
+        pg.display.set_mode(WIN_RES, flags=pg.OPENGL | pg.DOUBLEBUF) #Create pygame window
+        self.ctx = mgl.create_context() #Create ModernGL context
 
-        self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
-        self.ctx.gc_mode = 'auto'
+        self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND) #Enable flags inside of the context just created
+        self.ctx.gc_mode = 'auto' #Set garbage collection to auto
 
         self.clock = pg.time.Clock()
-        self.delta_time = 0
-        self.time = 0
+        self.delta_time = 0 #Time between frames
+        self.time = 0 #Time for the start of the program
 
-        pg.event.set_grab(True)
-        pg.mouse.set_visible(False)
+        pg.event.set_grab(True) #Set the window so that it grabs the mouse
+        pg.mouse.set_visible(False) #Hide mouse when inside of window
 
         self.is_running = True
         self.on_init()
@@ -49,6 +49,7 @@ class VoxelEngine:
         pg.display.set_caption(f'{self.clock.get_fps() :.0f}')
 
     def render(self):
+        """Method that clears the context buffer and renders all objects inside of scene"""
         self.ctx.clear(color=BG_COLOR)
         self.scene.render()
         pg.display.flip()

@@ -1,11 +1,10 @@
 import pygame as pg
 import moderngl as mgl
 
-
 class Textures:
     def __init__(self, app):
-        self.app = app
-        self.ctx = app.ctx
+        self.app = app # Get reference to app object
+        self.ctx = app.ctx # Get reference to moderngl context
 
         # load textures
         self.texture_0 = self.load('frame.png')
@@ -35,6 +34,6 @@ class Textures:
                 data=pg.image.tostring(texture, 'RGBA', False)
             )
         texture.anisotropy = 32.0
-        texture.build_mipmaps()
+        texture.build_mipmaps() # Generate mipmaps (lower resolutions versions of the textures that are meant to be rendered when the camera is farther away).
         texture.filter = (mgl.NEAREST, mgl.NEAREST)
         return texture

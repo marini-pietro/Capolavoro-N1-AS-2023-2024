@@ -1,6 +1,5 @@
 from settings import *
 
-
 class Frustum:
     def __init__(self, camera):
         self.cam: Camera = camera
@@ -12,6 +11,8 @@ class Frustum:
         self.tan_x = math.tan(half_x)
 
     def is_on_frustum(self, chunk):
+        """Method that checks whether a certain chunk is inside of frustum or not."""
+
         # vector to sphere center
         sphere_vec = chunk.center - self.cam.position
 

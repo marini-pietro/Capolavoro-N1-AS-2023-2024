@@ -1,7 +1,6 @@
 from meshes.quad_mesh import QuadMesh
 from settings import *
 
-
 class Water:
     def __init__(self, app):
         self.app = app

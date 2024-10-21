@@ -14,6 +14,8 @@ class Player(Camera):
         super().update()
 
     def handle_event(self, event):
+        """Handles mouse clicks."""
+
         # adding and removing voxels with clicks
         if event.type == pg.MOUSEBUTTONDOWN:
             voxel_handler = self.app.scene.world.voxel_handler
@@ -23,13 +25,17 @@ class Player(Camera):
                 voxel_handler.switch_mode()
 
     def mouse_control(self):
-        mouse_dx, mouse_dy = pg.mouse.get_rel()
-        if mouse_dx:
+        """Handle mouse motion input."""
+
+        mouse_dx, mouse_dy = pg.mouse.get_rel() # Get mouse motion relative to last frame (difference from this frame coordinates and last frame's)
+        if mouse_dx: # If mouse has moved horizontally
             self.rotate_yaw(delta_x=mouse_dx * MOUSE_SENSITIVITY)
-        if mouse_dy:
+        if mouse_dy: # If mouse has moved vertically
             self.rotate_pitch(delta_y=mouse_dy * MOUSE_SENSITIVITY)
 
     def keyboard_control(self):
+        """Handle keyboard input."""
+
         key_state = pg.key.get_pressed()
         vel = PLAYER_SPEED * self.app.delta_time
         if key_state[pg.K_w]:

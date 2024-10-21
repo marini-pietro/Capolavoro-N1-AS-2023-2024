@@ -7,7 +7,6 @@ from scene import Scene
 from player import Player
 from textures import Textures
 
-
 class VoxelEngine:
     def __init__(self):
         pg.init()
@@ -23,33 +22,40 @@ class VoxelEngine:
         self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND) #Enable flags inside of the context just created
         self.ctx.gc_mode = 'auto' #Set garbage collection to auto
 
-        self.clock = pg.time.Clock()
+        self.clock = pg.time.Clock() # Pygame clock object to track time
         self.delta_time = 0 #Time between frames
         self.time = 0 #Time for the start of the program
 
         pg.event.set_grab(True) #Set the window so that it grabs the mouse
         pg.mouse.set_visible(False) #Hide mouse when inside of window
 
-        self.is_running = True
+        self.is_running = True # Flag to keep track if game should be running or not
         self.on_init()
 
-    def on_init(self):
+    def on_init(self): 
+        """Method that initializes all the necessary objects."""
+
         self.textures = Textures(self)
         self.player = Player(self)
         self.shader_program = ShaderProgram(self)
         self.scene = Scene(self)
 
     def update(self):
-        self.player.update()
-        self.shader_program.update()
-        self.scene.update()
+        """
+        Method that updates all the components of the game.
+        Should be called each frame.
+        """
 
-        self.delta_time = self.clock.tick()
-        self.time = pg.time.get_ticks() * 0.001
-        pg.display.set_caption(f'{self.clock.get_fps() :.0f}')
+        self.player.update() # Update player position and camera
+        self.shader_program.update() # Update shaders
+        self.scene.update() # Update objects in scene
+
+        self.delta_time = self.clock.tick() # Get delta time (time between frames)
+        self.time = pg.time.get_ticks() * 0.001 # Get current time in seconds
+        pg.display.set_caption(f'{self.clock.get_fps() :.0f}') # Update caption with FPS
 
     def render(self):
-        """Method that clears the context buffer and renders all objects inside of scene"""
+        """Method that clears the context buffer and renders all objects inside of scene."""
         self.ctx.clear(color=BG_COLOR)
         self.scene.render()
         pg.display.flip()

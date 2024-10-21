@@ -6,15 +6,15 @@ import math
 # OpenGL settings
 MAJOR_VER, MINOR_VER = 3, 3
 DEPTH_SIZE = 24
-NUM_SAMPLES = 1  # antialiasing (increase for better quality)
+NUM_SAMPLES = 1  # antialiasing (increase for better quality )
 
 # resolution
 WIN_RES = glm.vec2(1920, 1080)
 
-# world generation
+# Seed for world gen (noise algorithm)
 SEED = 16
 
-# ray casting
+# Max raycasting distance
 MAX_RAY_DIST = 6
 
 # chunk
@@ -24,36 +24,36 @@ CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE
 CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
 CHUNK_SPHERE_RADIUS = H_CHUNK_SIZE * math.sqrt(3)
 
-# world
+# World dimnesions
 WORLD_W, WORLD_H = 20, 2
 WORLD_D = WORLD_W
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H
 
-# world center
+# World center coordinates
 CENTER_XZ = WORLD_W * H_CHUNK_SIZE
 CENTER_Y = WORLD_H * H_CHUNK_SIZE
 
-# camera
-ASPECT_RATIO = WIN_RES.x / WIN_RES.y
-FOV_DEG = 50
-V_FOV = glm.radians(FOV_DEG)  # vertical FOV
+# Camera settings
+ASPECT_RATIO = WIN_RES.x / WIN_RES.y 
+FOV_DEG = 50 # Field of view degree value
+V_FOV = glm.radians(FOV_DEG)  # Vertical FOV
 H_FOV = 2 * math.atan(math.tan(V_FOV * 0.5) * ASPECT_RATIO)  # horizontal FOV
-NEAR = 0.1
-FAR = 2000.0
-PITCH_MAX = glm.radians(89)
+NEAR = 0.1 # Near plane distance from camera
+FAR = 2000.0 # Far plane distance from camera
+PITCH_MAX = glm.radians(89) # Max vertical rotations
 
-# player
-PLAYER_SPEED = 0.005
-PLAYER_ROT_SPEED = 0.003
+# Player settings
+PLAYER_SPEED = 0.005 # Player movement speed
+PLAYER_ROT_SPEED = 0.003 # Camera rotation speed
 # PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
-PLAYER_POS = glm.vec3(CENTER_XZ, CHUNK_SIZE, CENTER_XZ)
-MOUSE_SENSITIVITY = 0.002
+PLAYER_POS = glm.vec3(CENTER_XZ, CHUNK_SIZE, CENTER_XZ) # Starting player position
+MOUSE_SENSITIVITY = 0.002 # Mouse sensibility
 
-# colors
-BG_COLOR = glm.vec3(0.58, 0.83, 0.99)
+# Standardized colors
+BG_COLOR = glm.vec3(0.58, 0.83, 0.99) #Color used for the sky and when buffer is cleared
 
-# textures
+# Textures ID's
 SAND = 1
 GRASS = 2
 DIRT = 3
@@ -62,22 +62,22 @@ SNOW = 5
 LEAVES = 6
 WOOD = 7
 
-# terrain levels
+# Terrain levels (at which heigth different types of terrain should take place)
 SNOW_LVL = 54
 STONE_LVL = 49
 DIRT_LVL = 40
 GRASS_LVL = 8
 SAND_LVL = 7
 
-# tree settings
+# Tree settings
 TREE_PROBABILITY = 0.02
 TREE_WIDTH, TREE_HEIGHT = 4, 8
 TREE_H_WIDTH, TREE_H_HEIGHT = TREE_WIDTH // 2, TREE_HEIGHT // 2
 
-# water
-WATER_LINE = 5.6
-WATER_AREA = 5 * CHUNK_SIZE * WORLD_W
+# Tree settings
+WATER_LINE = 5.6 # Heigth of water block
+WATER_AREA = 5 * CHUNK_SIZE * WORLD_W # Area of water block
 
-# cloud
-CLOUD_SCALE = 25
-CLOUD_HEIGHT = WORLD_H * CHUNK_SIZE * 2
+# Cloud settings
+CLOUD_SCALE = 25 # Dimension
+CLOUD_HEIGHT = WORLD_H * CHUNK_SIZE * 2 # Heigth of the clouds

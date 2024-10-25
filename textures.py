@@ -6,12 +6,12 @@ class Textures:
         self.app = app # Get reference to app object
         self.ctx = app.ctx # Get reference to moderngl context
 
-        # load textures
+        # Load textures
         self.texture_0 = self.load('frame.png')
         self.texture_1 = self.load('water.png')
-        self.texture_array_0 = self.load('tex_array_0.png', is_tex_array=True)
+        self.texture_array_0 = self.load('tex_array_0.png', is_tex_array=True) # Load texture array
 
-        # assign texture unit
+        # Assing locations to textures
         self.texture_0.use(location=0)
         self.texture_array_0.use(location=1)
         self.texture_1.use(location=2)

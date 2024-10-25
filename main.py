@@ -10,8 +10,11 @@ from textures import Textures
 class VoxelEngine:
     def __init__(self):
         pg.init()
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, MAJOR_VER)
+
+        #Define API version
+        pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, MAJOR_VER) 
         pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, MINOR_VER)
+        
         pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
         pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, DEPTH_SIZE)
         pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, NUM_SAMPLES)
@@ -30,7 +33,7 @@ class VoxelEngine:
         pg.mouse.set_visible(False) #Hide mouse when inside of window
 
         self.is_running = True # Flag to keep track if game should be running or not
-        self.on_init()
+        self.on_init() # Init all necessary objects
 
     def on_init(self): 
         """Method that initializes all the necessary objects."""
@@ -57,7 +60,7 @@ class VoxelEngine:
     def render(self):
         """Method that clears the context buffer and renders all objects inside of scene."""
         self.ctx.clear(color=BG_COLOR)
-        self.scene.render()
+        self.scene.render() # Render
         pg.display.flip()
 
     def handle_events(self):

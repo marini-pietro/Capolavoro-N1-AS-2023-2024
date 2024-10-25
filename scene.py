@@ -19,14 +19,14 @@ class Scene:
         self.clouds.update()
 
     def render(self):
-        # chunks rendering
+        # Render chunks
         self.world.render()
 
-        # rendering without cull face
+        # Render clouds and water without face culling because they are not fully opaque (not rendered faces will be visible if we use face culling)
         self.app.ctx.disable(mgl.CULL_FACE)
         self.clouds.render()
         self.water.render()
-        self.app.ctx.enable(mgl.CULL_FACE)
+        self.app.ctx.enable(mgl.CULL_FACE) # Renable face culling
 
-        # voxel selection
+        # Voxel Selection Outline
         self.voxel_marker.render()

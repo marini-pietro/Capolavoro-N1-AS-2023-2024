@@ -4,27 +4,36 @@ from frustum import Frustum
 
 class Camera:
     def __init__(self, position, yaw, pitch):
-        self.position = glm.vec3(position)
-        self.yaw = glm.radians(yaw)
-        self.pitch = glm.radians(pitch)
+        
+        self.position = glm.vec3(position) # Player position vector
 
+        # Define camera orentation variables
+        self.yaw = glm.radians(yaw) # Define yaw
+        self.pitch = glm.radians(pitch) # Define pitch
+
+        #Define standardized vectors
         self.up = glm.vec3(0, 1, 0)
         self.right = glm.vec3(1, 0, 0)
         self.forward = glm.vec3(0, 0, -1)
 
-        self.m_proj = glm.perspective(V_FOV, ASPECT_RATIO, NEAR, FAR)
-        self.m_view = glm.mat4()
+        # Define standard matrices
+        self.m_proj = glm.perspective(V_FOV, ASPECT_RATIO, NEAR, FAR) # Projection matrix
+        self.m_view = glm.mat4() # View matrix (initially an indendity matrix will be updated every frame)
 
-        self.frustum = Frustum(self)
+        self.frustum = Frustum(self) # Define Frustum object
 
     def update(self):
         self.update_vectors()
         self.update_view_matrix()
 
     def update_view_matrix(self):
+        """Updates view matrix."""
+
         self.m_view = glm.lookAt(self.position, self.position + self.forward, self.up)
 
     def update_vectors(self):
+        """Updates all vectors."""
+
         self.forward.x = glm.cos(self.yaw) * glm.cos(self.pitch)
         self.forward.y = glm.sin(self.pitch)
         self.forward.z = glm.sin(self.yaw) * glm.cos(self.pitch)

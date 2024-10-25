@@ -9,9 +9,9 @@ class Player(Camera):
         super().__init__(position, yaw, pitch)
 
     def update(self):
-        self.keyboard_control()
-        self.mouse_control()
-        super().update()
+        self.keyboard_control() # Handle keyboard input
+        self.mouse_control() # handle mouse input
+        super().update() # Update viewing matrices and vectors
 
     def handle_event(self, event):
         """Handles mouse clicks."""

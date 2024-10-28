@@ -4,7 +4,7 @@ from noise import *
 
 
 class CloudMesh(BaseMesh):
-    def __init__(self, app):
+    def __init__(self, engine):
         super().__init__()
         self.engine = engine
 

@@ -6,12 +6,12 @@ from world_objects.water import Water
 from world_objects.clouds import Clouds
 
 class Scene:
-    def __init__(self, app):
+    def __init__(self, engine):
         self.engine = engine
         self.world = World(self.engine)
         self.voxel_marker = VoxelMarker(self.world.voxel_handler)
-        self.water = Water(app)
-        self.clouds = Clouds(app)
+        self.water = Water(engine)
+        self.clouds = Clouds(engine)
 
     def update(self):
         self.world.update()

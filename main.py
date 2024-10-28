@@ -15,16 +15,16 @@ class VoxelEngine:
         pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, MAJOR_VER) 
         pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, MINOR_VER)
         
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
-        pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, DEPTH_SIZE)
-        pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, NUM_SAMPLES)
+        pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE) #Set core profile (remove deprecated functions)
+        pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, DEPTH_SIZE) #Set depth size (precision of depth buffer, used to handle depth calculations)
+        pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, NUM_SAMPLES) #Set number of samples for multisampling (antialiasing)
 
         pg.display.set_mode(WIN_RES, flags=pg.OPENGL | pg.DOUBLEBUF) #Create pygame window
         self.ctx = mgl.create_context() #Create ModernGL context
 
-        self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND) #Enable flags inside of the context just created
-        self.ctx.gc_mode = 'auto' #Set garbage collection to auto
-
+        self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND) #Enable flags inside of the context just created (depth test: pixels closer to the camera obscure the ones farther away)
+        self.ctx.gc_mode = 'auto' #Set garbage collection to auto                                                           cull face: only render visible faces of objects
+                                                                                                                          # blend: mix colors of objects based on alpha value (enable transparency)
         self.clock = pg.time.Clock() # Pygame clock object to track time
         self.delta_time = 0 #Time between frames
         self.time = 0 #Time for the start of the program
@@ -82,5 +82,5 @@ class VoxelEngine:
         sys.exit()
 
 if __name__ == '__main__':
-    app = VoxelEngine()
-    app.run()
+    engine = VoxelEngine()
+    engine.run()

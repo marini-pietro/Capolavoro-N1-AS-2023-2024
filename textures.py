@@ -2,9 +2,9 @@ import pygame as pg
 import moderngl as mgl
 
 class Textures:
-    def __init__(self, app):
-        self.engine = engine # Get reference to app object
-        self.ctx = app.ctx # Get reference to moderngl context
+    def __init__(self, engine):
+        self.engine = engine # Get reference to engine object
+        self.ctx = engine.ctx # Get reference to moderngl context
 
         # Load textures
         self.texture_0 = self.load('frame.png')

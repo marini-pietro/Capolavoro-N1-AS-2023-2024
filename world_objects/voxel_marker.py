@@ -4,7 +4,7 @@ from meshes.cube_mesh import CubeMesh
 
 class VoxelMarker:
     def __init__(self, voxel_handler):
-        self.engine = voxel_handler.app
+        self.engine = voxel_handler.engine
         self.handler = voxel_handler
         self.position = glm.vec3(0)
         self.m_model = self.get_model_matrix()

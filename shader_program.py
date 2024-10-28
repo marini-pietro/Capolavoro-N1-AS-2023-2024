@@ -2,10 +2,10 @@ from settings import *
 
 
 class ShaderProgram:
-    def __init__(self, app):
+    def __init__(self, engine):
         self.engine = engine
-        self.ctx = app.ctx
-        self.player = app.player
+        self.ctx = engine.ctx
+        self.player = engine.player
         # -------- shaders -------- #
         self.chunk = self.get_program(shader_name='chunk')
         self.voxel_marker = self.get_program(shader_name='voxel_marker')

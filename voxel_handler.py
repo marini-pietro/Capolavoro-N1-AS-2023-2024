@@ -4,7 +4,7 @@ from meshes.chunk_mesh_builder import get_chunk_index
 
 class VoxelHandler:
     def __init__(self, world):
-        self.engine = world.app
+        self.engine = world.engine
         self.chunks = world.chunks
 
         # ray casting result

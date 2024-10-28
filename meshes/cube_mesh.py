@@ -3,7 +3,7 @@ from meshes.base_mesh import BaseMesh
 
 
 class CubeMesh(BaseMesh):
-    def __init__(self, app):
+    def __init__(self, engine):
         super().__init__()
         self.engine = engine
         self.ctx = self.engine.ctx

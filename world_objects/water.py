@@ -7,4 +7,4 @@ class Water:
         self.mesh = QuadMesh(game) # Import standard quad mesh
 
     def render(self):
-        self.mesh.render()
+        self.mesh.render() # Render the water mesh

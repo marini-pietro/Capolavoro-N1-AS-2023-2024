@@ -2,10 +2,9 @@ from settings import *
 from world_objects.chunk import Chunk
 from voxel_handler import VoxelHandler
 
-
 class World:
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, engine):
+        self.engine = engine
         self.chunks = [None for _ in range(WORLD_VOL)]
         self.voxels = np.empty([WORLD_VOL, CHUNK_VOL], dtype='uint8')
         self.build_chunks()

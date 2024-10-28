@@ -4,7 +4,7 @@ from meshes.chunk_mesh_builder import get_chunk_index
 
 class VoxelHandler:
     def __init__(self, world):
-        self.app = world.app
+        self.engine = world.app
         self.chunks = world.chunks
 
         # ray casting result
@@ -78,9 +78,9 @@ class VoxelHandler:
 
     def ray_cast(self):
         # start point
-        x1, y1, z1 = self.app.player.position
+        x1, y1, z1 = self.engine.player.position
         # end point
-        x2, y2, z2 = self.app.player.position + self.app.player.forward * MAX_RAY_DIST
+        x2, y2, z2 = self.engine.player.position + self.engine.player.forward * MAX_RAY_DIST
 
         current_voxel_pos = glm.ivec3(x1, y1, z1)
         self.voxel_id = 0

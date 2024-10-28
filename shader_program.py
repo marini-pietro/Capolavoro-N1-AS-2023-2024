@@ -3,7 +3,7 @@ from settings import *
 
 class ShaderProgram:
     def __init__(self, app):
-        self.app = app
+        self.engine = engine
         self.ctx = app.ctx
         self.player = app.player
         # -------- shaders -------- #

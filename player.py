@@ -5,10 +5,12 @@ from settings import *
 
 class Player(Camera):
     def __init__(self, app, position=PLAYER_POS, yaw=-90, pitch=0):
-        self.app = app
+        self.engine = engine
         super().__init__(position, yaw, pitch)
 
     def update(self):
+        """Method that updates the player position and camera."""
+        
         self.keyboard_control() # Handle keyboard input
         self.mouse_control() # handle mouse input
         super().update() # Update viewing matrices and vectors
@@ -18,7 +20,7 @@ class Player(Camera):
 
         # adding and removing voxels with clicks
         if event.type == pg.MOUSEBUTTONDOWN:
-            voxel_handler = self.app.scene.world.voxel_handler
+            voxel_handler = self.engine.scene.world.voxel_handler
             if event.button == 1:
                 voxel_handler.set_voxel()
             if event.button == 3:
@@ -37,7 +39,7 @@ class Player(Camera):
         """Handle keyboard input."""
 
         key_state = pg.key.get_pressed()
-        vel = PLAYER_SPEED * self.app.delta_time
+        vel = PLAYER_SPEED * self.engine.delta_time
         if key_state[pg.K_w]:
             self.move_forward(vel)
         if key_state[pg.K_s]:

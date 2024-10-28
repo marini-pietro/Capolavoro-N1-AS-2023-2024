@@ -1,9 +1,15 @@
 from settings import *
 from frustum import Frustum
 
-
 class Camera:
     def __init__(self, position, yaw, pitch):
+        """Iitializes camera object.
+
+        Args:
+            position (int): Position of the camera in 3D space
+            yaw (int): Initial yaw of the camera
+            pitch (int): Initial pitch of the camera
+        """
         
         self.position = glm.vec3(position) # Player position vector
 
@@ -32,7 +38,9 @@ class Camera:
         self.m_view = glm.lookAt(self.position, self.position + self.forward, self.up)
 
     def update_vectors(self):
-        """Updates all vectors."""
+        """
+        Updates camera vectors based on yaw and pitch.
+        """
 
         self.forward.x = glm.cos(self.yaw) * glm.cos(self.pitch)
         self.forward.y = glm.sin(self.pitch)
@@ -43,8 +51,8 @@ class Camera:
         self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     def rotate_pitch(self, delta_y):
-        self.pitch -= delta_y
-        self.pitch = glm.clamp(self.pitch, -PITCH_MAX, PITCH_MAX)
+        self.pitch -= delta_y # Update pitch
+        self.pitch = glm.clamp(self.pitch, -PITCH_MAX, PITCH_MAX) # Clamp pitch to avoid flipping the camera
 
     def rotate_yaw(self, delta_x):
         self.yaw += delta_x

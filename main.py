@@ -59,24 +59,27 @@ class VoxelEngine:
 
     def render(self):
         """Method that clears the context buffer and renders all objects inside of scene."""
-        self.ctx.clear(color=BG_COLOR)
-        self.scene.render() # Render
-        pg.display.flip()
+        
+        self.ctx.clear(color=BG_COLOR) # Clear the context buffer
+        self.scene.render() # Render the scene
+        pg.display.flip() # Swap the buffers
 
     def handle_events(self):
+        """Method that handles all the events in the game."""
+
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 self.is_running = False
             self.player.handle_event(event=event)
 
     def run(self):
+        """Method that runs the game loop."""
         while self.is_running:
             self.handle_events()
             self.update()
             self.render()
         pg.quit()
         sys.exit()
-
 
 if __name__ == '__main__':
     app = VoxelEngine()

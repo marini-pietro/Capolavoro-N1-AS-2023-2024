@@ -4,11 +4,11 @@ from meshes.cube_mesh import CubeMesh
 
 class VoxelMarker:
     def __init__(self, voxel_handler):
-        self.app = voxel_handler.app
+        self.engine = voxel_handler.app
         self.handler = voxel_handler
         self.position = glm.vec3(0)
         self.m_model = self.get_model_matrix()
-        self.mesh = CubeMesh(self.app)
+        self.mesh = CubeMesh(self.engine)
 
     def update(self):
         if self.handler.voxel_id:

@@ -6,10 +6,10 @@ from noise import *
 class CloudMesh(BaseMesh):
     def __init__(self, app):
         super().__init__()
-        self.app = app
+        self.engine = engine
 
-        self.ctx = self.app.ctx
-        self.program = self.app.shader_program.clouds
+        self.ctx = self.engine.ctx
+        self.program = self.engine.shader_program.clouds
         self.vbo_format = '3u2'
         self.attrs = ('in_position',)
         self.vao = self.get_vao()

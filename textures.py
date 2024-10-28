@@ -3,7 +3,7 @@ import moderngl as mgl
 
 class Textures:
     def __init__(self, app):
-        self.app = app # Get reference to app object
+        self.engine = engine # Get reference to app object
         self.ctx = app.ctx # Get reference to moderngl context
 
         # Load textures
@@ -22,7 +22,7 @@ class Textures:
 
         if is_tex_array:
             num_layers = 3 * texture.get_height() // texture.get_width()  # 3 textures per layer
-            texture = self.app.ctx.texture_array(
+            texture = self.engine.ctx.texture_array(
                 size=(texture.get_width(), texture.get_height() // num_layers, num_layers),
                 components=4,
                 data=pg.image.tostring(texture, 'RGBA')

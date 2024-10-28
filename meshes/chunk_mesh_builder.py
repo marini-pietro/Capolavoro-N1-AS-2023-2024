@@ -1,9 +1,20 @@
 from settings import *
 from numba import uint8
 
-
 @njit
 def get_ao(local_pos, world_pos, world_voxels, plane):
+    """Generate ambient occlusion values for a voxel face.
+
+    Args:
+        local_pos (vec3): Local voxel position.
+        world_pos (vec3): Global voxel position.
+        world_voxels (np array): Voxel data of the world.
+        plane (str): Plane of the face. 
+
+    Returns:
+        _type_: _description_
+    """
+
     x, y, z = local_pos
     wx, wy, wz = world_pos
 

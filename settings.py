@@ -8,8 +8,17 @@ MAJOR_VER, MINOR_VER = 3, 3
 DEPTH_SIZE = 24
 NUM_SAMPLES = 1  # antialiasing (increase for better quality )
 
-# resolution
-WIN_RES = glm.vec2(1920, 1080)
+# Resolution
+RESOLUTIONS = {
+    "8KUHD": glm.vec2(7680, 4320),
+    "UHD": glm.vec2(3840, 2160),
+    "QHD": glm.vec2(2560, 1440),
+    "Full HD": glm.vec2(1920, 1080),
+    "HD+": glm.vec2(1600, 900),
+    "HD": glm.vec2(1280, 720),
+    "SVGA": glm.vec2(800, 600)
+}
+WIN_RES = RESOLUTIONS["Full HD"]
 
 # Seed for world gen (noise algorithm)
 SEED = 16

@@ -32,6 +32,7 @@ class ShaderProgram:
         self.water['u_texture_0'] = 2
         self.water['water_area'] = WATER_AREA
         self.water['water_line'] = WATER_LINE
+        self.water['bg_color'].write(BG_COLOR)
 
         # clouds
         self.clouds['m_proj'].write(self.player.m_proj)

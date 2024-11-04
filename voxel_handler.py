@@ -1,13 +1,12 @@
 from settings import *
 from meshes.chunk_mesh_builder import get_chunk_index
 
-
 class VoxelHandler:
     def __init__(self, world):
         self.engine = world.engine
         self.chunks = world.chunks
 
-        # ray casting result
+        # Variables to handle ray casting results
         self.chunk = None
         self.voxel_id = None
         self.voxel_index = None
@@ -33,59 +32,64 @@ class VoxelHandler:
                 if chunk.is_empty:
                     chunk.is_empty = False
 
-    def rebuild_adj_chunk(self, adj_voxel_pos):
-        index = get_chunk_index(adj_voxel_pos)
-        if index != -1:
-            self.chunks[index].mesh.rebuild()
+    def rebuild_chunk(self, adj_voxel_pos):
+        """Rebuild a chunk based identified by the a voxel position."""
+        index = get_chunk_index(adj_voxel_pos) # Get chunk index
+        if index != -1: # If chunk exists
+            self.chunks[index].mesh.rebuild() # Rebuild mesh
 
     def rebuild_adjacent_chunks(self):
         lx, ly, lz = self.voxel_local_pos
         wx, wy, wz = self.voxel_world_pos
 
         if lx == 0:
-            self.rebuild_adj_chunk((wx - 1, wy, wz))
+            self.rebuild_chunk((wx - 1, wy, wz))
         elif lx == CHUNK_SIZE - 1:
-            self.rebuild_adj_chunk((wx + 1, wy, wz))
+            self.rebuild_chunk((wx + 1, wy, wz))
 
         if ly == 0:
-            self.rebuild_adj_chunk((wx, wy - 1, wz))
+            self.rebuild_chunk((wx, wy - 1, wz))
         elif ly == CHUNK_SIZE - 1:
-            self.rebuild_adj_chunk((wx, wy + 1, wz))
+            self.rebuild_chunk((wx, wy + 1, wz))
 
         if lz == 0:
-            self.rebuild_adj_chunk((wx, wy, wz - 1))
+            self.rebuild_chunk((wx, wy, wz - 1))
         elif lz == CHUNK_SIZE - 1:
-            self.rebuild_adj_chunk((wx, wy, wz + 1))
+            self.rebuild_chunk((wx, wy, wz + 1))
 
     def remove_voxel(self):
-        if self.voxel_id:
-            self.chunk.voxels[self.voxel_index] = 0
+        """Remove a voxel from the world."""
+        if self.voxel_id: # If voxel exists
+            self.chunk.voxels[self.voxel_index] = 0 # Set voxel to air
 
-            self.chunk.mesh.rebuild()
-            self.rebuild_adjacent_chunks()
+            self.chunk.mesh.rebuild() # Rebuild mesh
+            self.rebuild_adjacent_chunks() # Rebuild adjacent chunks
 
     def set_voxel(self):
-        if self.interaction_mode:
-            self.add_voxel()
-        else:
-            self.remove_voxel()
+        """Set a voxel in the world."""	
+        if self.interaction_mode: # If interaction mode is set to add voxel
+            self.add_voxel() # Add voxel
+        else: # If interaction mode is set to remove voxel
+            self.remove_voxel() # Remove voxel
 
     def switch_mode(self):
-        self.interaction_mode = not self.interaction_mode
+        """Switch between add and remove voxel mode."""
+        self.interaction_mode = not self.interaction_mode # Switch mode
 
     def update(self):
         self.ray_cast()
 
     def ray_cast(self):
-        # start point
-        x1, y1, z1 = self.engine.player.position
-        # end point
-        x2, y2, z2 = self.engine.player.position + self.engine.player.forward * MAX_RAY_DIST
+        """Ray casting algorithm to find the voxel the player is looking at."""
+        # Start point of the ray
+        x1, y1, z1 = self.engine.player.position # Player position
+        # End point of the ray
+        x2, y2, z2 = self.engine.player.position + self.engine.player.forward * MAX_RAY_DIST # Player position + forward vector * max ray distance
 
-        current_voxel_pos = glm.ivec3(x1, y1, z1)
-        self.voxel_id = 0
-        self.voxel_normal = glm.ivec3(0)
-        step_dir = -1
+        current_voxel_pos = glm.ivec3(x1, y1, z1) # Current voxel position
+        self.voxel_id = 0 # Voxel id
+        self.voxel_normal = glm.ivec3(0) # Voxel normal
+        step_dir = -1 
 
         dx = glm.sign(x2 - x1)
         delta_x = min(dx / (x2 - x1), 10000000.0) if dx != 0 else 10000000.0
@@ -135,16 +139,17 @@ class VoxelHandler:
         return False
 
     def get_voxel_id(self, voxel_world_pos):
-        cx, cy, cz = chunk_pos = voxel_world_pos / CHUNK_SIZE
+        """Get the voxel id of a voxel in the world."""
+        cx, cy, cz = chunk_pos = voxel_world_pos / CHUNK_SIZE # Get chunk position
 
-        if 0 <= cx < WORLD_W and 0 <= cy < WORLD_H and 0 <= cz < WORLD_D:
-            chunk_index = cx + WORLD_W * cz + WORLD_AREA * cy
-            chunk = self.chunks[chunk_index]
+        if 0 <= cx < WORLD_W and 0 <= cy < WORLD_H and 0 <= cz < WORLD_D: # If chunk position is within world dimensions
+            chunk_index = cx + WORLD_W * cz + WORLD_AREA * cy # Get chunk index
+            chunk = self.chunks[chunk_index] # Get chunk
 
-            lx, ly, lz = voxel_local_pos = voxel_world_pos - chunk_pos * CHUNK_SIZE
+            lx, ly, lz = voxel_local_pos = voxel_world_pos - chunk_pos * CHUNK_SIZE # Get voxel local position
 
-            voxel_index = lx + CHUNK_SIZE * lz + CHUNK_AREA * ly
-            voxel_id = chunk.voxels[voxel_index]
+            voxel_index = lx + CHUNK_SIZE * lz + CHUNK_AREA * ly # Get voxel index
+            voxel_id = chunk.voxels[voxel_index] # Get voxel id
 
             return voxel_id, voxel_index, voxel_local_pos, chunk
         return 0, 0, 0, 0

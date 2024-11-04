@@ -2,7 +2,6 @@ from noise import noise2, noise3
 from random import random
 from settings import *
 
-
 @njit
 def get_height(x, z):
     # island mask
@@ -31,66 +30,62 @@ def get_height(x, z):
 
     return int(height)
 
-
 @njit
 def get_index(x, y, z):
+    """Get the index of a voxel in the voxels array."""
     return x + CHUNK_SIZE * z + CHUNK_AREA * y
-
 
 @njit
 def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
-    voxel_id = 0
+    voxel_id = 0 # Air (default value)
 
-    if wy < world_height - 1:
-        # create caves
-        if (noise3(wx * 0.09, wy * 0.09, wz * 0.09) > 0 and
-                noise2(wx * 0.1, wz * 0.1) * 3 + 3 < wy < world_height - 10):
-            voxel_id = 0
-
+    if wy < world_height - 1: # If not at the top of the world minus 1
+        # Create caves
+        if (noise3(wx * 0.09, wy * 0.09, wz * 0.09) > 0 and noise2(wx * 0.1, wz * 0.1) * 3 + 3 < wy < world_height - 10): # Noise for caves
+            voxel_id = 0 # Set to air
         else:
-            voxel_id = STONE
+            voxel_id = STONE # Else set to stone
     else:
-        rng = int(7 * random())
-        ry = wy - rng
-        if SNOW_LVL <= ry < world_height:
-            voxel_id = SNOW
+        rng = int(7 * random()) # Random number between 0 and 6
+        ry = wy - rng # Random height
+        if SNOW_LVL <= ry < world_height: # If the height is between the snow level and the world height
+            voxel_id = SNOW # Set to snow
 
-        elif STONE_LVL <= ry < SNOW_LVL:
-            voxel_id = STONE
+        elif STONE_LVL <= ry < SNOW_LVL: # If the height is between the stone level and the snow level
+            voxel_id = STONE # Set to stone
 
-        elif DIRT_LVL <= ry < STONE_LVL:
-            voxel_id = DIRT
+        elif DIRT_LVL <= ry < STONE_LVL: # If the height is between the dirt level and the stone level
+            voxel_id = DIRT # Set to dirt
 
-        elif GRASS_LVL <= ry < DIRT_LVL:
-            voxel_id = GRASS
+        elif GRASS_LVL <= ry < DIRT_LVL: # If the height is between the grass level and the dirt level
+            voxel_id = GRASS # Set to grass
 
-        else:
-            voxel_id = SAND
+        else: # If the height is below the grass level
+            voxel_id = SAND # Set to sand
 
-    # setting ID
+    # Set the voxel id
     voxels[get_index(x, y, z)] = voxel_id
 
-    # place tree
+    # If the world is less than the dirt level place a tree
     if wy < DIRT_LVL:
         place_tree(voxels, x, y, z, voxel_id)
 
-
 @njit
 def place_tree(voxels, x, y, z, voxel_id):
-    rnd = random()
-    if voxel_id != GRASS or rnd > TREE_PROBABILITY:
-        return None
-    if y + TREE_HEIGHT >= CHUNK_SIZE:
-        return None
-    if x - TREE_H_WIDTH < 0 or x + TREE_H_WIDTH >= CHUNK_SIZE:
-        return None
-    if z - TREE_H_WIDTH < 0 or z + TREE_H_WIDTH >= CHUNK_SIZE:
-        return None
+    rnd = random() # Random number between 0 and 1
+    if voxel_id != GRASS or rnd > TREE_PROBABILITY: # If the voxel id is not grass or the random number is greater than the tree probability
+        return None # Return None
+    if y + TREE_HEIGHT >= CHUNK_SIZE: # If the height of the tree is greater than the chunk size
+        return None # Return None
+    if x - TREE_H_WIDTH < 0 or x + TREE_H_WIDTH >= CHUNK_SIZE: # If the width of the tree is greater than the chunk size
+        return None # Return None
+    if z - TREE_H_WIDTH < 0 or z + TREE_H_WIDTH >= CHUNK_SIZE: # If the width of the tree is greater than the chunk size
+        return None # Return None
 
-    # dirt under the tree
+    # Set the voxel under the tree to dirt
     voxels[get_index(x, y, z)] = DIRT
 
-    # leaves
+    # Generate leaves
     m = 0
     for n, iy in enumerate(range(TREE_H_HEIGHT, TREE_HEIGHT - 1)):
         k = iy % 2
@@ -101,9 +96,9 @@ def place_tree(voxels, x, y, z, voxel_id):
                     voxels[get_index(x + ix + k, y + iy, z + iz + k)] = LEAVES
         m += 1 if n > 0 else 3 if n > 1 else 0
 
-    # tree trunk
+    # Generate trunk
     for iy in range(1, TREE_HEIGHT - 2):
         voxels[get_index(x, y + iy, z)] = WOOD
 
-    # top
+    # Generate leaves at the top of the tree
     voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = LEAVES

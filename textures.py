@@ -19,27 +19,28 @@ class Textures:
 
     def load(self, file_name, is_tex_array=False):
         """Load texture from file and return it."""
-        texture = pg.image.load(f'assets/{file_name}') # Load texture from file
-        texture = pg.transform.flip(texture, flip_x=True, flip_y=False) # Flip texture on x axis (moderngl has origin in top left corner and pygame in upper left corner so we need to flip the texture)
+        pg_texture = pg.image.load(f'assets/{file_name}') # Load texture from file
+        pg_texture = pg.transform.flip(pg_texture, flip_x=True, flip_y=False) # Flip texture on x axis (moderngl has origin in top left corner and pygame in upper left corner so we need to flip the texture)
 
         if is_tex_array: # If texture is a texture array
-            num_layers = 3 * texture.get_height() // texture.get_width()  # 3 textures per layer
+            num_layers = 3 * pg_texture.get_height() // pg_texture.get_width()  # 3 textures per layer
             texture = self.engine.ctx.texture_array( # Create texture array
-                size=(texture.get_width(), texture.get_height() // num_layers, num_layers), # Set size
+                size=(pg_texture.get_width(), pg_texture.get_height() // num_layers, num_layers), # Set size
                 components=4, # RGBA
-                data=pg.image.tostring(texture, 'RGBA') # Convert texture to string
+                data=pg.image.tostring(pg_texture, 'RGBA') # Convert texture to string
             )
         else: # If texture is not a texture array
             texture = self.ctx.texture( # Create texture
-                size=texture.get_size(), # Set size
+                size=pg_texture.get_size(), # Set size
                 components=4, # RGBA
-                data=pg.image.tostring(texture, 'RGBA', False) # Convert texture to string
+                data=pg.image.tostring(pg_texture, 'RGBA', False) # Convert texture to string (False means that the pixel data should not be flipped vertically)
             )
 
         # Set texture filtering (they are complementary with each other but optional)
         
-        # Set anisotropy level (filter textures so they look good at all angles at distances, the higher the samples the better the quality) 
-        texture.anisotropy = min(ANISOTROPY_LEVEL, self.ctx.info['GL_MAX_TEXTURE_MAX_ANISOTROPY']) # Set to 1 to disable anisotropic filtering, used min function to prevent anisotropy level from exceeding the maximum level supported by the GPU
+        # Set anisotropy level (filter textures so they look good at all angles at distances, the higher the samples the better the quality)
+        max_anisotropy = self.ctx.info.get('GL_MAX_TEXTURE_MAX_ANISOTROPY', 0) # Get the maximum anisotropy level supported by the GPU (0 if not supported)
+        texture.anisotropy = min(ANISOTROPY_LEVEL, max_anisotropy) if max_anisotropy != 0 else ANISOTROPY_LEVEL # Used min function to prevent anisotropy level from exceeding the maximum level supported by the GPU
         texture.build_mipmaps() # Generate mipmaps (lower resolutions versions of the textures that are meant to be rendered when the camera is farther away).
         texture.filter = (mgl.NEAREST, mgl.NEAREST) # Set nearest-neighbour filtering to both minification and magnification
         return texture

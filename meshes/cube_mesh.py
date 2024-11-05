@@ -1,7 +1,6 @@
 from settings import *
 from meshes.base_mesh import BaseMesh
 
-
 class CubeMesh(BaseMesh):
     def __init__(self, engine):
         super().__init__()
@@ -14,11 +13,13 @@ class CubeMesh(BaseMesh):
         self.vao = self.get_vao()
 
     @staticmethod
-    def get_data(vertices, indices):
+    def get_data(vertices, indices) -> np.array:
+        """Get the data for the vertices and indices."""
         data = [vertices[ind] for triangle in indices for ind in triangle]
         return np.array(data, dtype='float16')
 
-    def get_vertex_data(self):
+    def get_vertex_data(self) -> np.array:
+        """Get the vertex data for the cube."""
         vertices = [
             (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1),
             (0, 1, 0), (0, 0, 0), (1, 0, 0), (1, 1, 0)
@@ -42,6 +43,6 @@ class CubeMesh(BaseMesh):
             (0, 2, 3), (0, 1, 2),
             (3, 1, 2), (3, 0, 1),
         ]
-        tex_coord_data = self.get_data(tex_coord_vertices, tex_coord_indices)
-        vertex_data = np.hstack([tex_coord_data, vertex_data])
+        tex_coord_data = self.get_data(tex_coord_vertices, tex_coord_indices) # Get the texture coordinate data
+        vertex_data = np.hstack([tex_coord_data, vertex_data]) # Stack the texture coordinates on top of the vertex data
         return vertex_data

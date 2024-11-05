@@ -79,7 +79,7 @@ def pack_data(x, y, z, voxel_id, face_id, ao_id, flipped):
     return packed_data
 
 @njit
-def get_chunk_index(world_voxel_pos):
+def get_chunk_index(world_voxel_pos) -> int:
     wx, wy, wz = world_voxel_pos
     cx = wx // CHUNK_SIZE
     cy = wy // CHUNK_SIZE
@@ -91,7 +91,7 @@ def get_chunk_index(world_voxel_pos):
     return index
 
 @njit
-def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
+def is_void(local_voxel_pos, world_voxel_pos, world_voxels) -> bool:
     chunk_index = get_chunk_index(world_voxel_pos)
     if chunk_index == -1:
         return False
@@ -105,7 +105,7 @@ def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
     return True
 
 @njit
-def add_data(vertex_data, index, *vertices):
+def add_data(vertex_data, index, *vertices) -> bool: # Add vertices to the vertex data array
     for vertex in vertices:
         vertex_data[index] = vertex
         index += 1

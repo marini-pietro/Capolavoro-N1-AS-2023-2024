@@ -149,7 +149,7 @@ class VoxelHandler:
             lx, ly, lz = voxel_local_pos = voxel_world_pos - chunk_pos * CHUNK_SIZE # Get voxel local position
 
             voxel_index = lx + CHUNK_SIZE * lz + CHUNK_AREA * ly # Get voxel index
-            voxel_id = chunk.voxels[voxel_index] # Get voxel id
+            voxel_id = chunk.voxels[voxel_index].id # Get voxel id
 
             return voxel_id, voxel_index, voxel_local_pos, chunk
         return 0, 0, 0, 0

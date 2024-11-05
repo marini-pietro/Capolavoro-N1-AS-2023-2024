@@ -1,15 +1,16 @@
 from settings import *
 from world_objects.chunk import Chunk
 from voxel_handler import VoxelHandler
+from world_objects.voxel import Voxel
 
 class World:
     def __init__(self, engine):
         self.engine = engine
-        self.chunks = [None for _ in range(WORLD_VOL)]
-        self.voxels = np.empty([WORLD_VOL, CHUNK_VOL], dtype='uint8')
-        self.build_chunks()
-        self.build_chunk_mesh()
-        self.voxel_handler = VoxelHandler(self)
+        self.chunks = [None for _ in range(WORLD_VOL)] # Array to store all the chunks in the world
+        self.voxels: list[list[Voxel]] = [[None for _ in range(CHUNK_VOL)] for _ in range(WORLD_VOL)] # Array to store all the voxels in the world
+        self.build_chunks()     # Build all the chunks in the world  
+        self.build_chunk_mesh() # Build the mesh for all the chunks in the world
+        self.voxel_handler = VoxelHandler(self) # Create a voxel handler
 
     def update(self):
         self.voxel_handler.update()
@@ -20,19 +21,27 @@ class World:
                 for z in range(WORLD_D):
                     chunk = Chunk(self, position=(x, y, z))
 
-                    chunk_index = x + WORLD_W * z + WORLD_AREA * y
-                    self.chunks[chunk_index] = chunk
+                    chunk_index = x + WORLD_W * z + WORLD_AREA * y # Index in which to store the chunk in the array that stores all the chunks in the world
 
-                    # put the chunk voxels in a separate array
-                    self.voxels[chunk_index] = chunk.build_voxels()
+                    self.chunks[chunk_index] = chunk # Put the newly created chunk in the array that stores all the chunks in the world
 
-                    # get pointer to voxels
-                    chunk.voxels = self.voxels[chunk_index]
+                    chunk.build_voxels() # Build the voxels for the chunk
+                    self.voxels[chunk_index] = chunk.voxels # Put the voxels in the array that stores all the voxels in the world
 
-    def build_chunk_mesh(self):
+        print(self.voxels)
+
+    def build_chunk_mesh(self) -> None:
+        """Build the mesh for all the chunks in the world."""	
         for chunk in self.chunks:
             chunk.build_mesh()
 
     def render(self):
+        """Render all the chunks in the world."""
         for chunk in self.chunks:
             chunk.render()
+
+    def get_chunk(self, coordinates) -> Chunk:
+        """Get the chunk at the given coordinates."""
+        for chunk in self.chunks:
+            if chunk.position == coordinates:
+                return chunk

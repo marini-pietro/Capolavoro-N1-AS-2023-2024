@@ -8,12 +8,12 @@ from world_objects.clouds import Clouds
 class Scene:
     def __init__(self, engine):
         self.engine = engine
-        self.world = World(self.engine)
-        self.voxel_marker = VoxelMarker(self.world.voxel_handler)
-        self.water = Water(engine)
-        self.clouds = Clouds(engine)
+        self.world = World(self.engine) # Create world object
+        self.voxel_marker = VoxelMarker(self.world.voxel_handler) # Create voxel marker object
+        self.water = Water(engine) # Create water object
+        self.clouds = Clouds(engine) # Create clouds object
 
-    def update(self):
+    def update(self) -> None:
         self.world.update()
         self.voxel_marker.update()
         self.clouds.update()

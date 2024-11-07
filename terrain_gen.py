@@ -65,22 +65,14 @@ def set_voxel_id(voxels: list[list[Voxel]], x: int, y: int, z: int, wx: int, wy:
         else: # If the height is below the grass level
             voxel_id = SAND # Set to sand
 
-    # Calculate chunk coordinates
-    chunk_x = wx // CHUNK_SIZE
-    chunk_y = wy // CHUNK_SIZE
-    chunk_z = wz // CHUNK_SIZE
-
-    # Calculate the chunk index
-    chunk_index = chunk_x + WORLD_W * chunk_z + WORLD_AREA * chunk_y
-
     # Set the voxel id
     voxels[get_index(pos=(x, y, z))].id = voxel_id
 
     # If the world is less than the dirt level place a tree
     if wy < DIRT_LVL:
-        place_tree(voxels=voxels, chunk_index=chunk_index, voxel_id=voxel_id, pos=(x, y, z))
+        place_tree(voxels=voxels, voxel_id=voxel_id, pos=(x, y, z))
 
-def place_tree(voxels: list[Voxel], chunk_index: int,  pos: glm.vec3, voxel_id: int) -> None:
+def place_tree(voxels: list[Voxel], pos: glm.vec3, voxel_id: int) -> None:
     x, y, z = pos # Unpack the position
     rnd: float = random() # Random number between 0 and 1
     if voxel_id != GRASS or rnd > TREE_PROBABILITY: # If the voxel id is not grass or the random number is greater than the tree probability
@@ -103,16 +95,11 @@ def place_tree(voxels: list[Voxel], chunk_index: int,  pos: glm.vec3, voxel_id: 
         for ix in range(-TREE_H_WIDTH + m, TREE_H_WIDTH - m * rng):
             for iz in range(-TREE_H_WIDTH + m * rng, TREE_H_WIDTH - m):
                 if (ix + iz) % 4:
-                    voxels[get_index(pos=(x + ix + k, y + iy, z + iz + k))] = LEAVES
+                    voxels[get_index(pos=(x + ix + k, y + iy, z + iz + k))].id = LEAVES
         m += 1 if n > 0 else 3 if n > 1 else 0
-
-    
-    print(f"voxel type: {type(voxels)} and voxels[0] type: {type(voxels[0])} at line 110", flush=True)
-    print()
 
     # Generate trunk
     for iy in range(1, TREE_HEIGHT - 2):
-        print(f"voxels[get_index(pos=(x, y + iy, z))] type: {type(voxels[get_index(pos=(x, y + iy, z))])} with get index result {get_index(pos=(x, y + iy, z))}", flush=True)
         voxels[get_index(pos=(x, y + iy, z))].id = WOOD
 
     # Generate leaves at the top of the tree

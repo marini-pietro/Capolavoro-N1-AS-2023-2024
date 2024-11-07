@@ -22,10 +22,13 @@ class ChunkMesh(BaseMesh):
     def get_vertex_data(self):
         """Get the vertex data for the mesh."""
 
+        chunk_voxels_ids = [voxel.id for voxel in self.chunk.voxels]
+        world_voxels_ids = [voxel.id for chunk in self.chunk.world.voxels for voxel in chunk]
+
         mesh = build_chunk_mesh( # Numpy array (not explicitly declared because it would require that numpy is imported which is not needed in this file)
-            chunk_voxels=self.chunk.voxels,
+            chunk_voxels_ids=chunk_voxels_ids,
             format_size=self.format_size,
-            chunk_pos=self.chunk.position,
-            world_voxels=self.chunk.world.voxels
+            chunk_pos=tuple(map(int, self.chunk.position)), # Convert the position to a tuple of integers (numba cannot handle glm.vec3)
+            world_voxels_ids=world_voxels_ids
         )
         return mesh

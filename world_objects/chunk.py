@@ -61,7 +61,6 @@ class Chunk:
         return None
 
     def generate_terrain(self, voxels: list[Voxel], cx: int , cy: int, cz: int) -> None:
-        #print(f"{type(voxels)} -> {type(voxels[0])} while generating terrain for chunk at {cx, cy, cz}")
 
         for x in range(CHUNK_SIZE):
             wx: int = x + cx

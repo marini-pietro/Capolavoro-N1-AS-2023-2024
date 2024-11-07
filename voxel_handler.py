@@ -25,7 +25,7 @@ class VoxelHandler:
             # is the new place empty?
             if not result[0]:
                 _, voxel_index, _, chunk = result
-                chunk.voxels[voxel_index] = self.new_voxel_id
+                chunk.voxels[voxel_index].id = self.new_voxel_id
                 chunk.mesh.rebuild()
 
                 # was it an empty chunk
@@ -60,7 +60,7 @@ class VoxelHandler:
     def remove_voxel(self):
         """Remove a voxel from the world."""
         if self.voxel_id: # If voxel exists
-            self.chunk.voxels[self.voxel_index] = 0 # Set voxel to air
+            self.chunk.voxels[self.voxel_index].id = 0 # Set voxel to air
 
             self.chunk.mesh.rebuild() # Rebuild mesh
             self.rebuild_adjacent_chunks() # Rebuild adjacent chunks

@@ -28,18 +28,18 @@ SEED = 16
 MAX_RAY_DIST = 6
 
 # chunk
-CHUNK_SIZE = 48
+CHUNK_SIZE = 32
 H_CHUNK_SIZE = CHUNK_SIZE // 2
 CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE
-CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
+CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE # Volume of a chunk (number of voxels in a chunk)
 CHUNK_SPHERE_RADIUS = H_CHUNK_SIZE * math.sqrt(3)
 VOXEL_SIZE = 1 # Size of each voxel (do not modify as this could break collision in the game, if you want to modify the size of the voxels you would have to modify the vertices in the cube mesh)
 
 # World dimnesions
 WORLD_W, WORLD_H = 2, 2 # Width and height of the world in chunks (should be around 20, 2)
 WORLD_D = WORLD_W # Depth of the world in chunks (should be the same as the width)
-WORLD_AREA = WORLD_W * WORLD_D
-WORLD_VOL = WORLD_AREA * WORLD_H
+WORLD_AREA = WORLD_W * WORLD_D # Area of the world 
+WORLD_VOL = WORLD_AREA * WORLD_H # Volume of the world (number of chunks in the world)
 
 # World center coordinates
 CENTER_XZ = WORLD_W * H_CHUNK_SIZE

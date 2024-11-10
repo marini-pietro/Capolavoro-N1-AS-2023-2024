@@ -39,7 +39,7 @@ class Textures:
         # Set texture filtering (they are complementary with each other but optional)
         
         # Set anisotropy level (filter textures so they look good at all angles at distances, the higher the samples the better the quality) 
-        texture.anisotropy = min(ANISOTROPY_LEVEL, self.ctx.info['GL_MAX_TEXTURE_MAX_ANISOTROPY']) # Set to 1 to disable anisotropic filtering, used min function to prevent anisotropy level from exceeding the maximum level supported by the GPU
-        texture.build_mipmaps() # Generate mipmaps (lower resolutions versions of the textures that are meant to be rendered when the camera is farther away).
+        max_anisotropy = self.ctx.info.get('GL_MAX_TEXTURE_MAX_ANISOTROPY', 0) # Get the maximum anisotropy level supported by the GPU (0 if not supported)
+        texture.anisotropy = min(ANISOTROPY_LEVEL, max_anisotropy) if max_anisotropy != 0 else ANISOTROPY_LEVEL # Used min function to prevent anisotropy level from exceeding the maximum level supported by the GPUtexture.build_mipmaps() # Generate mipmaps (lower resolutions versions of the textures that are meant to be rendered when the camera is farther away).
         texture.filter = (mgl.NEAREST, mgl.NEAREST) # Set nearest-neighbour filtering to both minification and magnification
         return texture

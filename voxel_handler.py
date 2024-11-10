@@ -3,6 +3,7 @@ from meshes.chunk_mesh_builder import get_chunk_index
 
 class VoxelHandler:
     def __init__(self, world):
+        self.world = world
         self.engine = world.engine
         self.chunks = world.chunks
 
@@ -20,7 +21,7 @@ class VoxelHandler:
     def add_voxel(self):
         if self.voxel_id:
             # check voxel id along normal
-            result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
+            result = self.get_voxel_info(self.voxel_world_pos + self.voxel_normal)
 
             # is the new place empty?
             if not result[0]:
@@ -105,7 +106,7 @@ class VoxelHandler:
 
         while not (max_x > 1.0 and max_y > 1.0 and max_z > 1.0):
 
-            result = self.get_voxel_id(voxel_world_pos=current_voxel_pos)
+            result = self.get_voxel_info(voxel_world_pos=current_voxel_pos)
             if result[0]:
                 self.voxel_id, self.voxel_index, self.voxel_local_pos, self.chunk = result
                 self.voxel_world_pos = current_voxel_pos
@@ -138,7 +139,7 @@ class VoxelHandler:
                     step_dir = 2
         return False
 
-    def get_voxel_id(self, voxel_world_pos):
+    def get_voxel_info(self, voxel_world_pos) -> tuple:
         """Get the voxel id of a voxel in the world."""
         cx, cy, cz = chunk_pos = voxel_world_pos / CHUNK_SIZE # Get chunk position
 

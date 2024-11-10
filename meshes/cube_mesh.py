@@ -1,7 +1,6 @@
 from settings import *
 from meshes.base_mesh import BaseMesh
 
-
 class CubeMesh(BaseMesh):
     def __init__(self, engine):
         super().__init__()

@@ -51,6 +51,15 @@ class Chunk:
             self.is_empty = False
         return voxels
 
+    def get_voxel_bound_box(self, local_x, local_y, local_z) -> tuple:
+        min_x = self.position[0] * CHUNK_SIZE + local_x
+        max_x = min_x + 1
+        min_y = self.position[1] * CHUNK_SIZE + local_y
+        max_y = min_y + 1
+        min_z = self.position[2] * CHUNK_SIZE + local_z
+        max_z = min_z + 1
+        return (min_x, max_x, min_y, max_y, min_z, max_z)
+
     @staticmethod
     @njit
     def generate_terrain(voxels, cx, cy, cz):

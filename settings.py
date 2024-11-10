@@ -8,6 +8,7 @@ MAJOR_VER, MINOR_VER = 3, 3
 DEPTH_SIZE = 24
 NUM_SAMPLES = 1  # antialiasing (increase for better quality)
 ANISOTROPY_LEVEL = 32.0  # texture filtering
+MAX_FPS = 60
 
 # Resolution
 RESOLUTIONS = {
@@ -19,10 +20,10 @@ RESOLUTIONS = {
     "HD": glm.vec2(1280, 720),
     "SVGA": glm.vec2(800, 600)
 }
-WIN_RES = RESOLUTIONS["Full HD"]
+WIN_RES = RESOLUTIONS["HD"]
 
 # Seed for world gen (noise algorithm)
-SEED = 16
+SEED = 32
 
 # Max raycasting distance
 MAX_RAY_DIST = 6
@@ -53,11 +54,15 @@ NEAR = 0.1 # Near plane distance from camera
 FAR = 2000.0 # Far plane distance from camera
 PITCH_MAX = glm.radians(89) # Max vertical rotations
 
+# Physics settings
+GRAVITY_STRENGHT = 0.1 # Gravity force
+
 # Player settings
 PLAYER_SPEED = 0.005 # Player movement speed
 PLAYER_ROT_SPEED = 0.003 # Camera rotation speed
 # PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
 PLAYER_POS = glm.vec3(CENTER_XZ, CHUNK_SIZE, CENTER_XZ) # Starting player position
+PLAYER_SIZE = (1, 2, 1) # Player size (width, height, depth)
 MOUSE_SENSITIVITY = 0.002 # Mouse sensibility
 
 # Standardized colors

@@ -17,10 +17,10 @@ class Camera:
         self.yaw = glm.radians(yaw) # Define yaw
         self.pitch = glm.radians(pitch) # Define pitch
 
-        #Define standardized vectors
-        self.up = glm.vec3(0, 1, 0)
-        self.right = glm.vec3(1, 0, 0)
-        self.forward = glm.vec3(0, 0, -1)
+        #Define standardized vectors (down, left and backwards are the negative of up, right and forward)
+        self.up = glm.vec3(0, 1, 0) # Up vector
+        self.right = glm.vec3(1, 0, 0) # Right vector
+        self.forward = glm.vec3(0, 0, -1) # Forward vector
 
         # Define standard matrices
         self.m_proj = glm.perspective(V_FOV, ASPECT_RATIO, NEAR, FAR) # Projection matrix
@@ -51,26 +51,34 @@ class Camera:
         self.up = glm.normalize(glm.cross(self.right, self.forward))
 
     def rotate_pitch(self, delta_y):
+        """Rotate the camera/player around the pitch axis."""
         self.pitch -= delta_y # Update pitch
         self.pitch = glm.clamp(self.pitch, -PITCH_MAX, PITCH_MAX) # Clamp pitch to avoid flipping the camera
 
     def rotate_yaw(self, delta_x):
+        """Rotate the camera/player around the yaw axis."""
         self.yaw += delta_x
 
     def move_left(self, velocity):
+        """Move the camera/player to the left."""
         self.position -= self.right * velocity
 
     def move_right(self, velocity):
+        """Move the camera/player to the right."""
         self.position += self.right * velocity
 
     def move_up(self, velocity):
+        """Move the camera/player up."""
         self.position += self.up * velocity
 
     def move_down(self, velocity):
+        """Move the camera/player down."""
         self.position -= self.up * velocity
 
     def move_forward(self, velocity):
+        """Move the camera/player forward."""
         self.position += self.forward * velocity
 
     def move_back(self, velocity):
+        """Move the camera/player backward."""
         self.position -= self.forward * velocity

@@ -6,7 +6,7 @@ from settings import *
 class Player(Camera):
     def __init__(self, engine, position=PLAYER_POS, yaw=-90, pitch=0):
         self.engine = engine
-        self.collision_manager = CollisionManager(size=PLAYER_SIZE, detection_radius=COLLISION_DETECTION_RADIUS)
+        self.collision_manager = CollisionManager(size=PLAYER_SIZE, engine=engine, detection_radius=COLLISION_DETECTION_RADIUS)
         super().__init__(position, yaw, pitch)
 
     def update(self):

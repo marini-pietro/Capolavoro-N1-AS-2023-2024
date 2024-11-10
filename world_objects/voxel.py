@@ -2,7 +2,7 @@ from settings import CHUNK_SIZE, VOXEL_SIZE
 
 class Voxel:
     def __init__(self, chunk_pos = (0, 0, 0), position_in_chunk = (0, 0, 0)):
-        self.id: int = None
+        self.id: int = 0 # Could also be none but it would require additional checks when building meshes
         self.position_in_chunk = position_in_chunk
         self.world_position = self.get_world_position(chunk_pos)
     

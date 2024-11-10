@@ -1,5 +1,5 @@
 from settings import *
-from numba import uint8
+from numba import uint8, njit
 
 @njit # Use numba to accelerate this function that mainly contains calculations
 def get_ao(local_pos: tuple[int], world_pos: tuple[int], world_voxels_ids: np.array, plane: str) -> tuple[int, int, int, int]:
@@ -80,6 +80,10 @@ def pack_data(x, y, z, voxel_id, face_id, ao_id, flipped):
 
 @njit
 def get_chunk_index(world_voxel_pos: tuple[int, int, int]) -> int:
+    """
+    Get the chunk index of a voxel in the world.
+    """
+
     wx, wy, wz = world_voxel_pos
     cx = wx // CHUNK_SIZE
     cy = wy // CHUNK_SIZE
@@ -91,14 +95,19 @@ def get_chunk_index(world_voxel_pos: tuple[int, int, int]) -> int:
     return index
 
 @njit
-def is_void(local_voxel_pos: tuple[int, int, int], world_voxel_pos: tuple[int, int, int], world_voxels_ids: list[int]) -> bool:
+def is_void(local_voxel_pos: tuple[int, int, int], world_voxel_pos: tuple[int, int, int], world_voxels_ids: list[list[int]]) -> bool:
+    """
+    Check if a voxel is empty.
+    """
+    
     chunk_index: int = get_chunk_index(world_voxel_pos)
     if chunk_index == -1:
         return False
-    chunk_voxels = world_voxels_ids[chunk_index]
+
+    chunk_voxels: list[int] = world_voxels_ids[chunk_index]
 
     x, y, z = local_voxel_pos
-    voxel_index = x % CHUNK_SIZE + z % CHUNK_SIZE * CHUNK_SIZE + y % CHUNK_SIZE * CHUNK_AREA
+    voxel_index: int = x % CHUNK_SIZE + z % CHUNK_SIZE * CHUNK_SIZE + y % CHUNK_SIZE * CHUNK_AREA
 
     if chunk_voxels[voxel_index]:
         return False
@@ -112,7 +121,7 @@ def add_data(vertex_data, index, *vertices) -> bool: # Add vertices to the verte
     return index
 
 @njit
-def build_chunk_mesh(chunk_voxels_ids: list[int], format_size: str, chunk_pos: tuple[int, int, int], world_voxels_ids: list[int]) -> np.array:
+def build_chunk_mesh(chunk_voxels_ids: list[int], format_size: str, chunk_pos: tuple[int, int, int], world_voxels_ids: list[list[int]]) -> np.array:
     """
     Build the mesh data for a chunk.
 

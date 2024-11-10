@@ -1,5 +1,6 @@
 from meshes.base_mesh import BaseMesh
 from meshes.chunk_mesh_builder import build_chunk_mesh
+from numba.typed import List
 
 class ChunkMesh(BaseMesh):
     def __init__(self, chunk):
@@ -21,14 +22,20 @@ class ChunkMesh(BaseMesh):
 
     def get_vertex_data(self):
         """Get the vertex data for the mesh."""
-
-        chunk_voxels_ids = [voxel.id for voxel in self.chunk.voxels]
-        world_voxels_ids = [voxel.id for chunk in self.chunk.world.voxels for voxel in chunk]
+        chunk_voxels_ids: list[int] = [voxel.id for voxel in self.chunk.voxels]
+        
+        # Directly create the numba typed list
+        numba_world_voxels_ids = List()
+        for chunk in self.chunk.world.voxels:
+            numba_sublist = List()
+            for voxel in chunk:
+                numba_sublist.append(voxel.id)
+            numba_world_voxels_ids.append(numba_sublist)
 
         mesh = build_chunk_mesh( # Numpy array (not explicitly declared because it would require that numpy is imported which is not needed in this file)
             chunk_voxels_ids=chunk_voxels_ids,
             format_size=self.format_size,
             chunk_pos=tuple(map(int, self.chunk.position)), # Convert the position to a tuple of integers (numba cannot handle glm.vec3)
-            world_voxels_ids=world_voxels_ids
+            world_voxels_ids=numba_world_voxels_ids
         )
         return mesh

@@ -2,14 +2,15 @@ from settings import CHUNK_SIZE
 import glm
 
 class CollisionManager:
-    def __init__(self, size, detection_radius):
+    def __init__(self, size, engine, detection_radius):
         self.size = size
         self.detect_radius = detection_radius
+        self.engine = engine
 
     def check_collision(self, desired_position) -> bool: #TODO: Finish this function
         bounding_box = self.get_bounding_box(desired_position = desired_position) # Get the bounding box the player would have if it moved to the desired position
-        current_chunk = self.engine.scene.world.get_chunk(self.get_chunk_coordinates()) # Get the chunk the player is in
-        surrounding_voxels = self.get_surrounding_voxels(current_chunk) # Get the surrounding voxels of the player
+        current_chunk = self.engine.scene.world.get_chunk(self.get_chunk_coordinates(position = desired_position)) # Get the chunk the player is in
+        surrounding_voxels = self.get_surrounding_voxels(chunk=current_chunk, position=desired_position) # Get the surrounding voxels of the player
         
         for voxel in surrounding_voxels: # For each voxel in the surrounding voxels
             voxel_bounding_box = voxel.get_bounding_box()
@@ -19,9 +20,9 @@ class CollisionManager:
 
         return False
     
-    def get_surrounding_voxels(self, chunk) -> list:
+    def get_surrounding_voxels(self, chunk, position) -> list:
         """Get the surrounding voxels of the entity."""
-        x, y, z = self.position
+        x, y, z = position
         voxels = []
         for i in range(-self.detect_radius, self.detect_radius):
             for j in range(-self.detect_radius, self.detect_radius):
@@ -38,9 +39,9 @@ class CollisionManager:
                 y1_min < y2_max and y1_max > y2_min and
                 z1_min < z2_max and z1_max > z2_min)
 
-    def get_chunk_coordinates(self) -> glm.vec3:
+    def get_chunk_coordinates(self, position) -> glm.vec3:
         """Get the chunk coordinates the entity is in."""
-        x, y, z = self.position
+        x, y, z = position
         chunk_x: int = int(x // CHUNK_SIZE)
         chunk_y: int = int(y // CHUNK_SIZE)
         chunk_z: int = int(z // CHUNK_SIZE)

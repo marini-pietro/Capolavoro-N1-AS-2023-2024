@@ -118,8 +118,11 @@ class Player(Camera):
 
         if key_state[DOWN_KEY]:  # Move the player down
             bound_box = self.get_bound_box(self.position - self.up * vel)
-            block_below_pos: glm.ivec3 = glm.ivec3(self.position - self.up + glm.vec3(0, 1, 0))  # Define block below the player (assumes that the height of the player is 2)
+            # Define block below the player (assumes that the height of the player is 2)
+            block_below_pos: glm.ivec3 = glm.ivec3(self.position - self.up * self.heigth + glm.vec3(0, 1, 0))
+            
             voxel_id = self.get_voxel_id(world_pos=block_below_pos)
+            
             if voxel_id == 0 or not self.collision_manager.check_collision(bound_box, self.get_voxel_bounds(world_pos=block_below_pos)):
                 self.move_down(vel)
 

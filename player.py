@@ -46,109 +46,92 @@ class Player(Camera):
 
         if key_state[pg.K_w]:  # Move the player forward
             bound_box = self.get_bound_box(self.position + self.forward * vel)  # Get player bounding box
-            collides: bool = False  # Define flag for collision
-            blocks_infront_pos = [self.position + self.forward * vel, self.position + self.forward * vel - glm.vec3(0, -1, 0)]  # Define list of blocks in front of the player (assumes that the height of the player is 2)
+            collides = False  # Define flag for collision
+            blocks_infront_pos: list[glm.ivec3] = [glm.ivec3(self.position + self.forward), glm.ivec3(self.position + self.forward + glm.vec3(0, -1, 0))]  # Define list of blocks in front of the player (assumes that the height of the player is 2)
             for block_pos in blocks_infront_pos:
-
                 voxel_id = self.engine.scene.world.get_voxel_id(block_pos)
                 if voxel_id == 0: continue  # If the voxel is air, skip the iteration
 
                 block_infront_bound_box = self.get_voxel_bounds(*block_pos)
                 if self.collision_manager.check_collision(bound_box, block_infront_bound_box):  # Check if player collides with any of the blocks
-                    print("Collides with block in front")
                     collides = True  # Set collision flag to True
                     break
 
-            if collides == False:  # If player does not collide with any of the blocks
+            if not collides:  # If player does not collide with any of the blocks
                 self.move_forward(vel)  # If player does not collide with any of the blocks, move the player forward
 
         if key_state[pg.K_s]:  # Move the player backwards
             bound_box = self.get_bound_box(self.position - self.forward * vel)  # Get player bounding box
-            collides: bool = False  # Define flag for collision
-            blocks_behind_pos = [self.position - self.forward * vel, self.position - self.forward * vel - glm.vec3(0, -1, 0)]  # Define list of blocks behind the player (assumes that the height of the player is 2)
+            collides = False  # Define flag for collision
+            blocks_behind_pos: list[glm.ivec3] = [glm.ivec3(self.position - self.forward), glm.ivec3(self.position - self.forward + glm.vec3(0, -1, 0))]  # Define list of blocks behind the player (assumes that the height of the player is 2)
             for block_pos in blocks_behind_pos:
-
                 voxel_id = self.engine.scene.world.get_voxel_id(block_pos)
                 if voxel_id == 0:  continue # If the voxel is air, skip the iteration
 
                 block_behind_bound_box = self.get_voxel_bounds(*block_pos)
                 if self.collision_manager.check_collision(bound_box, block_behind_bound_box):  # Check if player collides with any of the blocks
-                    print("Collides with block behind")
                     collides = True  # Set collision flag to True
                     break  # Break the loop
 
-            if collides == False:  # If player does not collide with any of the blocks
+            if not collides:  # If player does not collide with any of the blocks
                 self.move_back(vel)  # If player does not collide with any of the blocks, move the player backwards
 
         if key_state[pg.K_d]:  # Move the player to the right
             bound_box = self.get_bound_box(self.position + self.right * vel)  # Get player bounding box
-            collides: bool = False  # Define flag for collision
-            blocks_to_the_right_pos = [self.position + self.right * vel, self.position + self.right * vel - glm.vec3(0, -1, 0)]  # Initialize list of blocks to the right of the player (assumes that the height of the player is 2)
+            collides = False  # Define flag for collision
+            blocks_to_the_right_pos: list[glm.ivec3] = [glm.ivec3(self.position + self.right), glm.ivec3(self.position + self.right + glm.vec3(0, -1, 0))]  # Initialize list of blocks to the right of the player (assumes that the height of the player is 2)
             for block_pos in blocks_to_the_right_pos:
-
                 voxel_id = self.engine.scene.world.get_voxel_id(block_pos)
                 if voxel_id == 0: continue # If the voxel is air, skip the iteration
 
                 block_bound_box = self.get_voxel_bounds(*block_pos)
                 if self.collision_manager.check_collision(bound_box, block_bound_box):  # Check if player collides with any of the blocks
                     collides = True  # Set collision flag to True
-                    print("Collides with block to the right")
                     break
 
-            if collides == False:  # If player does not collide with any of the blocks
+            if not collides:  # If player does not collide with any of the blocks
                 self.move_right(vel)  # If player does not collide with any of the blocks, move the player to the right
 
         if key_state[pg.K_a]:  # Move the player to the left
             bound_box = self.get_bound_box(self.position - self.right * vel)  # Get player bounding box
-            collides: bool = False  # Define flag for collision
-            blocks_to_the_left_pos = [self.position - self.right * vel, self.position - self.right * vel - glm.vec3(0, -1, 0)]  # Define list of blocks to the left of the player (assumes that the height of the player is 2)
+            collides = False  # Define flag for collision
+            blocks_to_the_left_pos: list[glm.ivec3] = [glm.ivec3(self.position - self.right), glm.ivec3(self.position - self.right + glm.vec3(0, -1, 0))]  # Define list of blocks to the left of the player (assumes that the height of the player is 2)
             for block_pos in blocks_to_the_left_pos:
-
                 voxel_id = self.engine.scene.world.get_voxel_id(block_pos)
                 if voxel_id == 0: continue  # If the voxel is air, skip the iteration
 
                 block_bound_box = self.get_voxel_bounds(*block_pos)
                 if self.collision_manager.check_collision(bound_box, block_bound_box):  # Check if player collides with any of the blocks
-                    print("Collides with block to the left")
                     collides = True  # Set collision flag to True
                     break  # Break the loop
 
-            if collides == False:  # If player does not collide with any of the blocks
+            if not collides:  # If player does not collide with any of the blocks
                 self.move_left(vel)  # If player does not collide with any of the blocks, move the player to the left
 
         if key_state[pg.K_q]:  # Move the player up
             bound_box = self.get_bound_box(self.position + self.up * vel)
-            block_above_world_pos = self.position + glm.vec3(0, 1, 0) * vel
-            
+            block_above_world_pos: glm.ivec3 = glm.ivec3(self.position + self.up)
             voxel_id = self.engine.scene.world.get_voxel_id(block_above_world_pos)
-            if voxel_id != 0:  # Check if the voxel is not air
-                block_above_bound_box = self.get_voxel_bounds(*block_above_world_pos)
-                if not self.collision_manager.check_collision(bound_box, block_above_bound_box):
-                    self.move_up(vel)
-                else:
-                    print("Collides with block above")
+            if voxel_id == 0 or not self.collision_manager.check_collision(bound_box, self.get_voxel_bounds(*block_above_world_pos)):
+                self.move_up(vel)
 
         if key_state[pg.K_e]:  # Move the player down
             bound_box = self.get_bound_box(self.position - self.up * vel)
-            block_below_world_pos = self.position - glm.vec3(0, 1, 0) * vel
+            block_below_world_pos: glm.ivec3 = glm.ivec3(self.position - self.up) # Get block below the player (ivec means integer vector needed to get proper voxel world position)
             voxel_id = self.engine.scene.world.get_voxel_id(block_below_world_pos)
-            if voxel_id != 0:  # Check if the voxel is not air
-                block_below_bound_box = self.get_voxel_bounds(*block_below_world_pos)
-                if not self.collision_manager.check_collision(bound_box, block_below_bound_box):
-                    self.move_down(vel)
-                else:
-                    print(f"Collides with block below, self.position: {self.position}, block_below_world_pos: {block_below_world_pos}, with voxel_id: {voxel_id}")
+            if voxel_id == 0 or not self.collision_manager.check_collision(bound_box, self.get_voxel_bounds(*block_below_world_pos)):
+                self.move_down(vel)
 
     def apply_gravity(self):
         """Apply gravity to the player."""
 
         vel = PLAYER_SPEED * self.engine.delta_time
-        bound_box = self.get_bound_box(self.position)
-        block_below_world_pos = self.get_voxel_bounds(self.position - glm.vec3(0, GRAVITY_STRENGHT, 0) * vel)
 
+        bound_box = self.get_bound_box(self.position - self.up * vel)  # Get player bounding box
+        block_below_world_pos: glm.ivec3 = glm.ivec3(self.position - self.up) # Get block below the player (ivec means integer vector needed to get proper voxel world position)
         voxel_id = self.engine.scene.world.get_voxel_id(block_below_world_pos)
-        if voxel_id == 0 and not self.collision_manager.check_collision(bound_box, block_below_world_pos):
-            self.move_down(GRAVITY_STRENGHT)
+        if voxel_id == 0 or not self.collision_manager.check_collision(bound_box, self.get_voxel_bounds(*block_below_world_pos)):
+            self.move_down(GRAVITY_STRENGTH)
 
     def get_bound_box(self, desired_position):
         """Returns player bounding box."""

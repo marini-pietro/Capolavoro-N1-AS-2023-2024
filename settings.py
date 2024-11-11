@@ -55,7 +55,7 @@ FAR = 2000.0 # Far plane distance from camera
 PITCH_MAX = glm.radians(89) # Max vertical rotations
 
 # Physics settings
-GRAVITY_STRENGHT = 0.1 # Gravity force
+GRAVITY_STRENGTH = 0.1 # Gravity force
 
 # Player settings
 PLAYER_SPEED = 0.005 # Player movement speed

@@ -1,6 +1,5 @@
 from settings import *
 
-
 class ShaderProgram:
     def __init__(self, engine):
         self.engine = engine
@@ -11,6 +10,7 @@ class ShaderProgram:
         self.voxel_marker = self.get_program(shader_name='voxel_marker')
         self.water = self.get_program(shader_name='water')
         self.clouds = self.get_program(shader_name='clouds')
+        self.player = self.get_program(shader_name='player')
         # Set uniforms 
         self.set_uniforms_on_init()
 
@@ -40,12 +40,18 @@ class ShaderProgram:
         self.clouds['bg_color'].write(BG_COLOR)
         self.clouds['cloud_scale'] = CLOUD_SCALE 
 
+        # Player uniforms
+        self.player['m_proj'].write(self.player.m_proj)
+        self.player['m_model'].write(glm.mat4())
+        self.player['u_texture_0'] = 0
+
     def update(self):
         # Update view matrices
         self.chunk['m_view'].write(self.player.m_view)
         self.voxel_marker['m_view'].write(self.player.m_view)
         self.water['m_view'].write(self.player.m_view)
         self.clouds['m_view'].write(self.player.m_view)
+        self.player['m_view'].write(self.player.m_view)
 
     def get_program(self, shader_name):
         """Loads shader program from .vert or .frag files in the shaders folder."""	

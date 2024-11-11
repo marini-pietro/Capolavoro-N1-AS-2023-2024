@@ -33,10 +33,12 @@ class World:
         for chunk in self.chunks:
             chunk.build_mesh()
 
-    def get_voxel_bounds(self, world_x, world_y, world_z) -> tuple:
+    def get_voxel_bounds(self, world_pos) -> tuple:
         """
         Get the voxel bounding box for the given world position.
         """
+        world_x, world_y, world_z = world_pos
+
         chunk_x, voxel_x = divmod(int(world_x), CHUNK_SIZE)
         chunk_y, voxel_y = divmod(int(world_y), CHUNK_SIZE)
         chunk_z, voxel_z = divmod(int(world_z), CHUNK_SIZE)

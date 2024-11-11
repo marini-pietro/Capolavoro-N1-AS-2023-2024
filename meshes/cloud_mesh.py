@@ -2,7 +2,6 @@ from settings import *
 from meshes.base_mesh import BaseMesh
 from noise import *
 
-
 class CloudMesh(BaseMesh):
     def __init__(self, engine):
         super().__init__()

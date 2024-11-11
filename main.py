@@ -1,6 +1,9 @@
 from settings import *
 import moderngl as mgl
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1" #Hide pygame support prompt
 import pygame as pg
+del os
 import sys
 from shader_program import ShaderProgram
 from scene import Scene

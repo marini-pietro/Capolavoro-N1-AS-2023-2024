@@ -3,4 +3,5 @@ moderngl
 numpy
 PyGLM
 numba
-opensimplex 
+opensimplex
+pygltflib

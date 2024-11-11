@@ -1,7 +1,9 @@
 from numba import njit
+from random import randint
 import numpy as np
 import glm
 import math
+import pygame as pg
 
 # OpenGL settings
 MAJOR_VER, MINOR_VER = 3, 3
@@ -20,10 +22,10 @@ RESOLUTIONS = {
     "HD": glm.vec2(1280, 720),
     "SVGA": glm.vec2(800, 600)
 }
-WIN_RES = RESOLUTIONS["HD"]
+WIN_RES = RESOLUTIONS["Full HD"]
 
 # Seed for world gen (noise algorithm)
-SEED = 32
+SEED = randint(0, 1000)
 
 # Max raycasting distance
 MAX_RAY_DIST = 6
@@ -55,7 +57,15 @@ FAR = 2000.0 # Far plane distance from camera
 PITCH_MAX = glm.radians(89) # Max vertical rotations
 
 # Physics settings
-GRAVITY_STRENGTH = 0.1 # Gravity force
+GRAVITY_STRENGTH = 0.003 # Gravity force
+
+# Player controls
+FORWARD_KEY = pg.K_w
+BACKWARD_KEY = pg.K_s
+LEFT_KEY = pg.K_a
+RIGHT_KEY = pg.K_d
+UP_KEY = pg.K_SPACE
+DOWN_KEY = pg.K_LSHIFT
 
 # Player settings
 PLAYER_SPEED = 0.005 # Player movement speed

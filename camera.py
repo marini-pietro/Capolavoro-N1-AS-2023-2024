@@ -57,28 +57,30 @@ class Camera:
 
     def rotate_yaw(self, delta_x):
         """Rotate the camera/player around the yaw axis."""
-        self.yaw += delta_x
+        self.yaw += delta_x # Update yaw
 
-    def move_left(self, velocity):
+    def move_left(self, velocity) -> None:
         """Move the camera/player to the left."""
         self.position -= self.right * velocity
 
-    def move_right(self, velocity):
+    def move_right(self, velocity) -> None:
         """Move the camera/player to the right."""
         self.position += self.right * velocity
 
-    def move_up(self, velocity):
+    def move_up(self, velocity) -> None:
         """Move the camera/player up."""
         self.position += self.up * velocity
 
-    def move_down(self, velocity):
+    def move_down(self, velocity) -> None:
         """Move the camera/player down."""
         self.position -= self.up * velocity
 
     def move_forward(self, velocity):
-        """Move the camera/player forward."""
-        self.position += self.forward * velocity
+        """Move the camera/player forward on the horizontal plane. (Ignore vertical component)"""
+        horizontal_forward = glm.vec3(self.forward.x, 0, self.forward.z)  # Ignore the vertical component
+        horizontal_forward = glm.normalize(horizontal_forward)  # Normalize the horizontal forward vector
+        self.position += horizontal_forward * velocity  # Move forward
 
-    def move_back(self, velocity):
+    def move_back(self, velocity) -> None:
         """Move the camera/player backward."""
         self.position -= self.forward * velocity

@@ -56,7 +56,7 @@ class VoxelEngine:
         self.shader_program.update() # Update shaders
         self.scene.update() # Update objects in scene
 
-        self.delta_time = self.clock.tick() # self.clock.tick(MAX_FPS) # Limit FPS
+        self.delta_time = self.clock.tick(MAX_FPS) # Limit FPS
         self.time = pg.time.get_ticks() * 0.001 # Get current time in seconds
         pg.display.set_caption(f'{self.clock.get_fps() :.0f}') # Update caption with FPS
 

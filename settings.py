@@ -38,7 +38,7 @@ CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
 CHUNK_SPHERE_RADIUS = H_CHUNK_SIZE * math.sqrt(3)
 
 # World dimnesions
-WORLD_W, WORLD_H = 20, 2
+WORLD_W, WORLD_H = 2, 2
 WORLD_D = WORLD_W
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H
@@ -57,22 +57,25 @@ FAR = 2000.0 # Far plane distance from camera
 PITCH_MAX = glm.radians(89) # Max vertical rotations
 
 # Physics settings
-GRAVITY_STRENGTH = 0.003 # Gravity force
+GRAVITY_STRENGTH = 0.5 # Gravity force
 
 # Player controls
 FORWARD_KEY = pg.K_w
 BACKWARD_KEY = pg.K_s
 LEFT_KEY = pg.K_a
 RIGHT_KEY = pg.K_d
-UP_KEY = pg.K_SPACE
-DOWN_KEY = pg.K_LSHIFT
+UP_KEY = pg.K_q
+DOWN_KEY = pg.K_e
 
 # Player settings
+GAMEMODE = "SURVIVAL" # Creative or Survival
 PLAYER_SPEED = 0.005 # Player movement speed
 PLAYER_ROT_SPEED = 0.003 # Camera rotation speed
-# PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
-PLAYER_POS = glm.vec3(CENTER_XZ, CHUNK_SIZE, CENTER_XZ) # Starting player position
-PLAYER_SIZE = (1, 2, 1) # Player size (width, height, depth)
+PLAYER_POS = glm.vec3(CENTER_XZ + 0.5, WORLD_H * CHUNK_SIZE + 0.5, CENTER_XZ + 0.5)
+#PLAYER_POS = glm.vec3(CENTER_XZ, CHUNK_SIZE, CENTER_XZ) # Starting player position
+PLAYER_WIDTH = 1
+PLAYER_HEIGTH = 2
+PLAYER_DEPTH = 1
 MOUSE_SENSITIVITY = 0.002 # Mouse sensibility
 
 # Standardized colors

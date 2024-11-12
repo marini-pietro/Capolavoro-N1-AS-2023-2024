@@ -57,7 +57,7 @@ FAR = 2000.0 # Far plane distance from camera
 PITCH_MAX = glm.radians(89) # Max vertical rotations
 
 # Physics settings
-GRAVITY_STRENGTH = 0.5 # Gravity force
+GRAVITY_STRENGTH = 0.1 # Gravity force
 
 # Player controls
 FORWARD_KEY = pg.K_w

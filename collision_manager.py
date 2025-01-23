@@ -1,3 +1,5 @@
+from settings import ALLOW_COLLISION
+
 class CollisionManager:
     def __init__(self) -> None:
         ...
@@ -12,7 +14,8 @@ class CollisionManager:
         Returns:
             bool: True if the entity bounding box intersects with the block bounding box, False otherwise.
         """
-        return self.bounding_boxes_intersect(entity_bound_box, block_bound_box)
+        if ALLOW_COLLISION: return self.bounding_boxes_intersect(entity_bound_box, block_bound_box) 
+        else: return False
 
     def bounding_boxes_intersect(self, bbox1, bbox2) -> bool:
         """

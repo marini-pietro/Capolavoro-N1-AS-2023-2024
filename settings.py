@@ -78,6 +78,7 @@ UP_KEY = pg.K_q
 DOWN_KEY = pg.K_e
 
 # Player settings
+ALLOW_COLLISION = False # Allow player to collide with blocks
 ALLOW_FLIGHT = True # Allow player to fly
 GRAVITY_ENABLED = False # Enable or disable gravity
 PLAYER_SPEED = 0.005 # Player movement speed

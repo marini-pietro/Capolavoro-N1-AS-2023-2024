@@ -1,14 +1,29 @@
-from settings import *
-import moderngl as mgl
-import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1" #Hide pygame support prompt
-import pygame as pg
-del os
-import sys
-from shader_program import ShaderProgram
-from scene import Scene
-from player import Player
-from textures import Textures
+try:
+    from settings import *
+    import moderngl as mgl
+    import os
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1" #Hide pygame support prompt
+    import pygame as pg
+    del os
+    import sys
+    from shader_program import ShaderProgram
+    from scene import Scene
+    from player import Player
+    from textures import Textures
+except ImportError as e:
+    import os
+    os.system('pip install -r requirements.txt')
+    from settings import *
+    import moderngl as mgl
+    import os
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1" #Hide pygame support prompt
+    import pygame as pg
+    del os
+    import sys
+    from shader_program import ShaderProgram
+    from scene import Scene
+    from player import Player
+    from textures import Textures
 
 class VoxelEngine:
     def __init__(self):

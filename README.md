@@ -56,13 +56,15 @@ Per aumentare le prestazioni sono state implementate diverse tecniche:
 
 **Modalità di utilizzo del progetto:**
 
-Dopo aver installato la versione [Python](https://www.python.org/downloads/release/python-3121/) citata nell’introduzione l’unico requisito rimanente è installare le librerie necessarie tramite questo comando eseguibile nel prompt dei comandi:  
-	pip install pygame moderngl numpy PyGLM numba opensimplex  
-Tramite il rispettivo comando:   
-	pip uninstall \-y pygame moderngl numpy PyGLM numba opensimplex  
+Dopo aver installato la versione [Python](https://www.python.org/downloads/release/python-3121/) citata nell’introduzione l’unico requisito rimanente è installare le librerie necessarie.  
+Basta quindi avviare `main.py` per eseguire allo stesso momento un comando cmd per scaricare tutte le librerie necessarie.  
+Tramite il rispettivo comando:
+```bash     
+pip uninstall -r requirements.txt  
+```
 è possibile invece disinstallare i pacchetti se si desidera.  
 Una volta fatto ciò per avviare il progetto basta avviare il file main.py, se invece si vogliono modificare delle impostazioni è possibile modificare il file settings.py, è possibile, per esempio, modificare le dimensioni del mondo e della finestra, cambiare il mondo modificando il [seme](https://it.wikipedia.org/wiki/Numeri_pseudo-casuali) e modificare la velocità di movimento.  
-Per chiudere la finestra e quindi terminare il processo basta premere escape sulla tastiera o la x in alto a destra nella finestra.
+Per chiudere la finestra e quindi terminare il processo basta premere ESCAPE sulla tastiera o la x in alto a destra nella finestra.
 
 **Eventuali crediti e fonti:**
 

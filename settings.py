@@ -1,9 +1,19 @@
-from numba import njit
-from random import randint
-import numpy as np
-import glm
-import math
-import pygame as pg
+try:
+    from numba import njit
+    from random import randint
+    import numpy as np
+    import glm
+    import math
+    import pygame as pg
+except ImportError as e:
+    import os
+    os.system('pip install -r requirements.txt')
+    from numba import njit
+    from random import randint
+    import numpy as np
+    import glm
+    import math
+    import pygame as pg
 
 # OpenGL settings
 MAJOR_VER, MINOR_VER = 3, 3
@@ -38,7 +48,7 @@ CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
 CHUNK_SPHERE_RADIUS = H_CHUNK_SIZE * math.sqrt(3)
 
 # World dimnesions
-WORLD_W, WORLD_H = 2, 2
+WORLD_W, WORLD_H = 20, 2
 WORLD_D = WORLD_W
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H
@@ -68,7 +78,8 @@ UP_KEY = pg.K_q
 DOWN_KEY = pg.K_e
 
 # Player settings
-GAMEMODE = "SURVIVAL" # Creative or Survival
+ALLOW_FLIGHT = True # Allow player to fly
+GRAVITY_ENABLED = False # Enable or disable gravity
 PLAYER_SPEED = 0.005 # Player movement speed
 PLAYER_ROT_SPEED = 0.003 # Camera rotation speed
 PLAYER_POS = glm.vec3(CENTER_XZ + 0.5, WORLD_H * CHUNK_SIZE + 0.5, CENTER_XZ + 0.5)

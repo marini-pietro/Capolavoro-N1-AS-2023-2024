@@ -21,7 +21,9 @@ class Player(Camera):
         """Method that updates the player position and camera."""
         
         self.keyboard_control() # Handle keyboard input
-        self.apply_gravity() # Apply gravity to the player
+        if GRAVITY_ENABLED:
+            print("Gravity enabled")
+            self.apply_gravity() # Apply gravity to the player
         self.mouse_control() # handle mouse input
         super().update() # Update viewing matrices and vectors
 
@@ -122,7 +124,7 @@ class Player(Camera):
                 if not collides:  # If player does not collide with any of the blocks
                     self.move_left(vel)  # If player does not collide with any of the blocks, move the player to the left
         
-        if not (key_state[UP_KEY] and key_state[DOWN_KEY]) and GAMEMODE == "CREATIVE": # If player is not pressing both up and down keys and the game mode is creative
+        if not (key_state[UP_KEY] and key_state[DOWN_KEY]) and ALLOW_FLIGHT: # If player is not pressing both up and down keys and the player can fly
             if key_state[UP_KEY]:  # Move the player up
                 bound_box = self.get_bound_box(self.position + self.up * vel)
                 block_above_world_pos: glm.ivec3 = glm.ivec3(self.position + self.up)  # Define block above the player (assumes that the height of the player is 2)
